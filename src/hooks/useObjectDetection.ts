@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 // @ts-expect-error - inferencejs package has typing issues with exports resolution
-import { InferenceEngine } from 'inferencejs';
+import { InferenceEngine, CVImage } from 'inferencejs';
 import { useHydrationStore } from '../store/hydrationStore';
-import { DETECTION_CLASSES, FRAME_RATES, type DetectedObject } from '../constants';
+import { DETECTION_CLASSES, FRAME_RATES, ROBOFLOW_CONFIG, type DetectedObject } from '../constants';
 
 interface Detection {
   class: string;
@@ -18,8 +18,6 @@ const OBJECT_FRAME_INTERVAL = 1000 / FRAME_RATES.objectDetection;
 export const useObjectDetection = (
   videoElement: HTMLVideoElement | null,
   canvasElement: HTMLCanvasElement | null,
-  apiKey: string | null,
-  modelId: string | null
 ) => {
   const inferenceRef = useRef<InferenceEngine | null>(null);
   const animationRef = useRef<number>(0);
@@ -27,15 +25,15 @@ export const useObjectDetection = (
   const setObjectDetected = useHydrationStore((state) => state.setObjectDetected);
 
   useEffect(() => {
-    if (!videoElement || !canvasElement || !apiKey || !modelId) return;
+    if (!videoElement || !canvasElement) return;
 
     const initializeInference = async () => {
       inferenceRef.current = new InferenceEngine();
       
       const workerId = await inferenceRef.current.startWorker(
-        modelId,
-        1,
-        apiKey
+        ROBOFLOW_CONFIG.modelName,
+        ROBOFLOW_CONFIG.modelVersion,
+        ROBOFLOW_CONFIG.publishableKey
       );
 
       return workerId;
@@ -64,7 +62,8 @@ export const useObjectDetection = (
       }
 
       try {
-        const detections = await inferenceRef.current.infer(workerId, videoElement);
+        const image = new CVImage(videoElement);
+        const detections = await inferenceRef.current.infer(workerId, image);
         
         const drinkingObjects = detections.filter((d: Detection) => 
           DETECTION_CLASSES.includes(d.class.toLowerCase())
@@ -117,7 +116,7 @@ export const useObjectDetection = (
         inferenceRef.current = null;
       }
     };
-  }, [videoElement, canvasElement, apiKey, modelId, setObjectDetected]);
+  }, [videoElement, canvasElement, setObjectDetected]);
 
   return null;
 };

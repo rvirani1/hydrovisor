@@ -13,7 +13,8 @@ export type DetectedObject = typeof DETECTION_CLASSES[number];
 // Roboflow configuration
 export const ROBOFLOW_CONFIG = {
   publishableKey: import.meta.env.VITE_ROBOFLOW_PUBLISHABLE_KEY,
-  modelId: import.meta.env.VITE_ROBOFLOW_MODEL_ID,
+  modelName: import.meta.env.VITE_ROBOFLOW_MODEL_NAME,
+  modelVersion: import.meta.env.VITE_ROBOFLOW_MODEL_VERSION,
 } as const;
 
 // Frame rate constants

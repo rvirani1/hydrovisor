@@ -6,20 +6,15 @@ import { TimeSinceLastDrink } from './components/TimeSinceLastDrink';
 import { useFaceDetection } from './hooks/useFaceDetection';
 import { useObjectDetection } from './hooks/useObjectDetection';
 import { useDrinkingDetection } from './hooks/useDrinkingDetection';
-import { ROBOFLOW_CONFIG } from './constants';
 
 function App() {
   const [videoElement, setVideoElement] = useState<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const { publishableKey: apiKey, modelId } = ROBOFLOW_CONFIG;
-
   useFaceDetection(videoElement, canvasRef.current);
   useObjectDetection(
     videoElement, 
     canvasRef.current, 
-    apiKey, 
-    modelId
   );
   useDrinkingDetection();
 
