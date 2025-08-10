@@ -24,10 +24,10 @@ function App() {
   useDrinkingDetection();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-500 via-indigo-600 to-purple-700 flex flex-col">
-      <header className="bg-white/10 backdrop-blur-md border-b border-white/20 text-white text-center py-6">
-        <h1 className="text-4xl font-bold mb-2">💧 Hydrovisor</h1>
-        <p className="text-lg opacity-90">Your personal hydration tracking assistant</p>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <header className="bg-white border-b border-gray-200 text-gray-800 text-center py-6 shadow-sm">
+        <h1 className="text-4xl font-bold mb-2 text-blue-600">💧 Hydrovisor</h1>
+        <p className="text-lg text-gray-600">Your personal hydration tracking assistant</p>
       </header>
 
       <div className="flex-1 flex gap-8 p-8 max-w-7xl mx-auto w-full">

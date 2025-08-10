@@ -5,8 +5,6 @@ export const HydrationConfig: React.FC = () => {
   const {
     hydrationIntervalMinutes,
     setHydrationInterval,
-    isTracking,
-    setIsTracking,
     reset,
   } = useHydrationStore();
 
@@ -39,21 +37,10 @@ export const HydrationConfig: React.FC = () => {
       </div>
 
 
-      <div className="flex gap-4 mt-6">
-        <button
-          onClick={() => setIsTracking(!isTracking)}
-          className={`flex-1 py-3 px-6 rounded-lg font-semibold text-white transition-colors ${
-            isTracking 
-              ? 'bg-red-500 hover:bg-red-600' 
-              : 'bg-green-500 hover:bg-green-600'
-          }`}
-        >
-          {isTracking ? 'Stop Tracking' : 'Start Tracking'}
-        </button>
-        
+      <div className="flex justify-center mt-6">
         <button 
           onClick={reset} 
-          className="flex-1 py-3 px-6 rounded-lg font-semibold text-white bg-orange-500 hover:bg-orange-600 transition-colors"
+          className="py-3 px-8 rounded-lg font-semibold text-white bg-orange-500 hover:bg-orange-600 transition-colors"
         >
           Reset Stats
         </button>

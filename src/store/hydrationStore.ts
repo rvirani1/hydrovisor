@@ -117,14 +117,15 @@ export const useHydrationStore = create<HydrationStore>((set, get) => ({
     return state.hydrationEvents.filter(event => event.timestamp >= today).length;
   },
   
-  reset: () => set({
+  reset: () => set((state) => ({
     hydrationEvents: [],
-    trackingStartTime: null,
     lastHydrationTime: null,
     faceDetected: false,
     objectDetected: false,
     currentObject: null,
     isDrinking: false,
     drinkingStartTime: null,
-  }),
+    // Reset tracking start time to now, keeping tracking active
+    trackingStartTime: state.isTracking ? new Date() : state.trackingStartTime,
+  })),
 }));
