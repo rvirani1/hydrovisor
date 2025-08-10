@@ -8,7 +8,7 @@ interface WebcamFeedProps {
 
 export const WebcamFeed: React.FC<WebcamFeedProps> = ({ onVideoRef, canvasRef }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const setWebcamReady = useHydrationStore((state) => state.setWebcamReady);
+  const { setWebcamReady, setIsTracking, isTracking } = useHydrationStore();
 
   const setupWebcam = useCallback(async () => {
     if (!videoRef.current) return;
@@ -35,11 +35,16 @@ export const WebcamFeed: React.FC<WebcamFeedProps> = ({ onVideoRef, canvasRef })
       await videoRef.current.play();
       setWebcamReady(true);
       onVideoRef(videoRef.current);
+      
+      // Auto-start tracking when webcam is ready
+      if (!isTracking) {
+        setIsTracking(true);
+      }
     } catch (error) {
       console.error('Error accessing webcam:', error);
       setWebcamReady(false);
     }
-  }, [onVideoRef, setWebcamReady]);
+  }, [onVideoRef, setWebcamReady, setIsTracking, isTracking]);
 
   useEffect(() => {
     const videoElement = videoRef.current;

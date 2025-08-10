@@ -9,7 +9,6 @@ export const HydrationStats: React.FC = () => {
     getTodayHydrationCount,
     hydrationIntervalMinutes,
     isDrinking,
-    faceDetected,
     objectDetected,
     currentObject,
   } = useHydrationStore();
@@ -23,14 +22,6 @@ export const HydrationStats: React.FC = () => {
       <h2 className="text-2xl font-semibold text-gray-800 mb-6">Hydration Tracker</h2>
       
       <div className="flex gap-3 mb-6">
-        <div className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-all ${
-          faceDetected ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
-        }`}>
-          <span className={`w-2 h-2 rounded-full ${
-            faceDetected ? 'bg-green-500' : 'bg-gray-400'
-          }`}></span>
-          Face Detected
-        </div>
         <div className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-all ${
           objectDetected ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
         }`}>
