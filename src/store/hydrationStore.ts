@@ -1,28 +1,30 @@
 import { create } from 'zustand';
+import { type DetectedObject } from '../constants';
 
 interface HydrationEvent {
   timestamp: Date;
-  detectedObject: 'cup' | 'glass' | 'bottle';
+  detectedObject: DetectedObject;
 }
 
 interface HydrationStore {
   hydrationEvents: HydrationEvent[];
   isTracking: boolean;
+  trackingStartTime: Date | null;
   hydrationIntervalMinutes: number;
   lastHydrationTime: Date | null;
   webcamReady: boolean;
   faceDetected: boolean;
   objectDetected: boolean;
-  currentObject: 'cup' | 'glass' | 'bottle' | null;
+  currentObject: DetectedObject | null;
   isDrinking: boolean;
   drinkingStartTime: Date | null;
   
-  addHydrationEvent: (object: 'cup' | 'glass' | 'bottle') => void;
+  addHydrationEvent: (object: DetectedObject) => void;
   setIsTracking: (tracking: boolean) => void;
   setHydrationInterval: (minutes: number) => void;
   setWebcamReady: (ready: boolean) => void;
   setFaceDetected: (detected: boolean) => void;
-  setObjectDetected: (detected: boolean, object?: 'cup' | 'glass' | 'bottle' | null) => void;
+  setObjectDetected: (detected: boolean, object?: DetectedObject | null) => void;
   setIsDrinking: (drinking: boolean) => void;
   startDrinking: () => void;
   stopDrinking: () => void;
@@ -35,7 +37,8 @@ interface HydrationStore {
 export const useHydrationStore = create<HydrationStore>((set, get) => ({
   hydrationEvents: [],
   isTracking: false,
-  hydrationIntervalMinutes: 30,
+  trackingStartTime: null,
+  hydrationIntervalMinutes: 3,
   lastHydrationTime: null,
   webcamReady: false,
   faceDetected: false,
@@ -52,7 +55,10 @@ export const useHydrationStore = create<HydrationStore>((set, get) => ({
     }));
   },
   
-  setIsTracking: (tracking) => set({ isTracking: tracking }),
+  setIsTracking: (tracking) => set((state) => ({ 
+    isTracking: tracking,
+    trackingStartTime: tracking && !state.trackingStartTime ? new Date() : state.trackingStartTime
+  })),
   
   setHydrationInterval: (minutes) => set({ hydrationIntervalMinutes: minutes }),
   
@@ -84,15 +90,24 @@ export const useHydrationStore = create<HydrationStore>((set, get) => ({
   
   getTimeSinceLastHydration: () => {
     const state = get();
-    if (!state.lastHydrationTime) return null;
-    return Math.floor((Date.now() - state.lastHydrationTime.getTime()) / 60000);
+    // If we have a last hydration time, use that
+    if (state.lastHydrationTime) {
+      return Math.floor((Date.now() - state.lastHydrationTime.getTime()) / 1000);
+    }
+    // If tracking started but no drinks yet, count from tracking start time
+    if (state.trackingStartTime && state.isTracking) {
+      return Math.floor((Date.now() - state.trackingStartTime.getTime()) / 1000);
+    }
+    // No tracking started yet
+    return null;
   },
   
   isOverdue: () => {
     const state = get();
-    const timeSince = state.getTimeSinceLastHydration();
-    if (timeSince === null) return false;
-    return timeSince >= state.hydrationIntervalMinutes;
+    const timeSinceSeconds = state.getTimeSinceLastHydration();
+    if (timeSinceSeconds === null) return false;
+    const timeSinceMinutes = Math.floor(timeSinceSeconds / 60);
+    return timeSinceMinutes >= state.hydrationIntervalMinutes;
   },
   
   getTodayHydrationCount: () => {
@@ -104,6 +119,7 @@ export const useHydrationStore = create<HydrationStore>((set, get) => ({
   
   reset: () => set({
     hydrationEvents: [],
+    trackingStartTime: null,
     lastHydrationTime: null,
     faceDetected: false,
     objectDetected: false,

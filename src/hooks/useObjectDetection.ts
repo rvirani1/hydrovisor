@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 // @ts-expect-error - inferencejs package has typing issues with exports resolution
 import { InferenceEngine } from 'inferencejs';
 import { useHydrationStore } from '../store/hydrationStore';
+import { DETECTION_CLASSES, FRAME_RATES, type DetectedObject } from '../constants';
 
 interface Detection {
   class: string;
@@ -12,8 +13,7 @@ interface Detection {
   height: number;
 }
 
-const OBJECT_DETECTION_FPS = 5;
-const OBJECT_FRAME_INTERVAL = 1000 / OBJECT_DETECTION_FPS;
+const OBJECT_FRAME_INTERVAL = 1000 / FRAME_RATES.objectDetection;
 
 export const useObjectDetection = (
   videoElement: HTMLVideoElement | null,
@@ -67,7 +67,7 @@ export const useObjectDetection = (
         const detections = await inferenceRef.current.infer(workerId, videoElement);
         
         const drinkingObjects = detections.filter((d: Detection) => 
-          ['cup', 'glass', 'bottle'].includes(d.class.toLowerCase())
+          DETECTION_CLASSES.includes(d.class.toLowerCase())
         );
 
         if (drinkingObjects.length > 0) {
@@ -77,7 +77,7 @@ export const useObjectDetection = (
 
           setObjectDetected(
             true, 
-            primaryObject.class.toLowerCase() as 'cup' | 'glass' | 'bottle'
+            primaryObject.class.toLowerCase() as DetectedObject
           );
 
           ctx.strokeStyle = '#ff0000';

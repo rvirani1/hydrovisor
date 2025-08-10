@@ -2,16 +2,17 @@ import React, { useState, useRef } from 'react';
 import { WebcamFeed } from './components/WebcamFeed';
 import { HydrationStats } from './components/HydrationStats';
 import { HydrationConfig } from './components/HydrationConfig';
+import { TimeSinceLastDrink } from './components/TimeSinceLastDrink';
 import { useFaceDetection } from './hooks/useFaceDetection';
 import { useObjectDetection } from './hooks/useObjectDetection';
 import { useDrinkingDetection } from './hooks/useDrinkingDetection';
+import { ROBOFLOW_CONFIG } from './constants';
 
 function App() {
   const [videoElement, setVideoElement] = useState<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const apiKey = import.meta.env.VITE_ROBOFLOW_PUBLISHABLE_KEY;
-  const modelId = import.meta.env.VITE_ROBOFLOW_MODEL_ID;
+  const { publishableKey: apiKey, modelId } = ROBOFLOW_CONFIG;
 
   useFaceDetection(videoElement, canvasRef.current);
   useObjectDetection(
@@ -42,6 +43,8 @@ function App() {
           <HydrationStats />
         </div>
       </div>
+      
+      <TimeSinceLastDrink />
     </div>
   );
 }

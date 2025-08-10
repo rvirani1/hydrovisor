@@ -2,9 +2,9 @@ import { useEffect, useRef } from 'react';
 import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detection';
 import '@mediapipe/face_mesh';
 import { useHydrationStore } from '../store/hydrationStore';
+import { FRAME_RATES } from '../constants';
 
-const FACE_DETECTION_FPS = 15;
-const FACE_FRAME_INTERVAL = 1000 / FACE_DETECTION_FPS;
+const FACE_FRAME_INTERVAL = 1000 / FRAME_RATES.faceDetection;
 
 export const useFaceDetection = (
   videoElement: HTMLVideoElement | null,

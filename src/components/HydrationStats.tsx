@@ -14,7 +14,7 @@ export const HydrationStats: React.FC = () => {
     currentObject,
   } = useHydrationStore();
 
-  const timeSinceLastHydration = getTimeSinceLastHydration();
+  const timeSinceLastHydrationSeconds = getTimeSinceLastHydration();
   const overdue = isOverdue();
   const todayCount = getTodayHydrationCount();
 
@@ -61,7 +61,7 @@ export const HydrationStats: React.FC = () => {
         }`}>
           <h3 className="text-xs font-medium text-gray-600 mb-2">Time Since Last Drink</h3>
           <div className={`text-3xl font-bold ${overdue ? 'text-red-600' : 'text-gray-800'}`}>
-            {timeSinceLastHydration !== null ? `${timeSinceLastHydration}` : '--'}
+            {timeSinceLastHydrationSeconds !== null ? `${Math.floor(timeSinceLastHydrationSeconds / 60)}` : '--'}
           </div>
           <div className="text-xs text-gray-500 mt-1">minutes</div>
           {overdue && (
