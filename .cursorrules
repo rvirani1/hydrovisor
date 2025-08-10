@@ -1,0 +1,121 @@
+# Hydrovisor Project Rules
+
+## Tech Stack
+- React 18 with TypeScript
+- Vite for build tooling
+- TailwindCSS for styling
+- Zustand for state management
+- TensorFlow.js with MediaPipe FaceMesh for face detection
+- Roboflow InferenceJS for object detection
+
+## Code Style Guidelines
+
+### TypeScript
+- Use explicit types for all function parameters and return types
+- Prefer interfaces over types for object shapes
+- Use const assertions where appropriate
+- Avoid using `any` type
+
+### React Components
+- Use functional components with hooks
+- Keep components small and focused on a single responsibility
+- Extract custom hooks for reusable logic
+- Use React.FC for component type definitions
+
+### State Management
+- Use Zustand store for global state
+- Keep store slices focused and organized
+- Use selectors to minimize re-renders
+- Implement proper TypeScript types for store
+
+### Styling
+- Use TailwindCSS utility classes exclusively
+- Avoid inline styles or separate CSS files
+- Use Tailwind's responsive modifiers for mobile-first design
+- Leverage Tailwind's color palette for consistency
+
+### File Organization
+```
+src/
+  components/     # React components
+  hooks/         # Custom React hooks
+  store/         # Zustand store files
+  types/         # TypeScript type definitions
+  utils/         # Utility functions
+```
+
+### Naming Conventions
+- Components: PascalCase (e.g., `WebcamFeed.tsx`)
+- Hooks: camelCase with 'use' prefix (e.g., `useFaceDetection.ts`)
+- Files: Match component/hook name
+- Variables/functions: camelCase
+- Constants: UPPER_SNAKE_CASE
+- Interfaces: PascalCase with 'I' prefix optional
+
+### Best Practices
+- Implement proper error handling for camera access
+- Debounce/throttle expensive operations
+- Clean up resources in useEffect cleanup functions
+- Memoize expensive computations with useMemo
+- Use React.memo for expensive components when needed
+
+### Performance Considerations
+- Optimize video processing with requestAnimationFrame
+- Limit face/object detection frequency to maintain performance
+- Use Canvas API efficiently for overlays
+- Implement proper cleanup for video streams
+
+### Testing Approach
+- Unit tests for utility functions
+- Component tests for critical UI components
+- Integration tests for detection logic
+- E2E tests for user workflows
+
+### Accessibility
+- Ensure proper ARIA labels
+- Maintain keyboard navigation support
+- Provide visual feedback for all states
+- Include proper alt text for visual elements
+
+### Security
+- Never commit API keys or sensitive data
+- Use environment variables for configuration
+- Validate all user inputs
+- Implement proper CORS handling
+
+## Project-Specific Rules
+
+### Hydration Detection Logic
+- Minimum drinking duration: 2 seconds for valid hydration event
+- Face must be detected as primary/largest in frame
+- Object (cup/glass/bottle) must be detected simultaneously
+- 500ms delay before stopping drinking detection
+
+### UI/UX Guidelines
+- Show real-time status indicators for face and object detection
+- Provide clear visual feedback when drinking is detected
+- Display overdue alerts prominently
+- Maintain smooth animations without performance impact
+
+### Configuration
+- Allow user to set hydration interval (1-120 minutes)
+- Support dynamic Roboflow API key and model ID
+- Reset functionality should clear all tracking data
+- Persist settings in localStorage (future enhancement)
+
+## Development Workflow
+1. Always test camera permissions in browser
+2. Use npm run dev for development
+3. Check console for detection errors
+4. Monitor performance with Chrome DevTools
+5. Test on multiple devices for responsive design
+
+## Future Enhancements to Consider
+- Data persistence with localStorage
+- Export hydration data to CSV
+- Daily/weekly hydration goals
+- Push notifications for reminders
+- Dark mode toggle
+- Multiple user profiles
+- Historical data visualization
+- Integration with health apps
