@@ -3,12 +3,16 @@ import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detec
 import '@mediapipe/face_mesh';
 import { useHydrationStore } from '../store/hydrationStore';
 
+const FACE_DETECTION_FPS = 15;
+const FACE_FRAME_INTERVAL = 1000 / FACE_DETECTION_FPS;
+
 export const useFaceDetection = (
   videoElement: HTMLVideoElement | null,
   canvasElement: HTMLCanvasElement | null
 ) => {
   const detectorRef = useRef<faceLandmarksDetection.FaceLandmarksDetector | null>(null);
   const animationRef = useRef<number>(0);
+  const lastFrameTimeRef = useRef<number>(0);
   const setFaceDetected = useHydrationStore((state) => state.setFaceDetected);
 
   useEffect(() => {
@@ -26,11 +30,25 @@ export const useFaceDetection = (
       detectorRef.current = await faceLandmarksDetection.createDetector(model, detectorConfig);
     };
 
-    const detectFaces = async () => {
-      if (!detectorRef.current || !videoElement || !canvasElement) return;
+    const detectFaces = async (currentTime: number) => {
+      if (!detectorRef.current || !videoElement || !canvasElement) {
+        animationRef.current = requestAnimationFrame(detectFaces);
+        return;
+      }
+
+      // Frame rate limiting - only process if enough time has passed
+      if (currentTime - lastFrameTimeRef.current < FACE_FRAME_INTERVAL) {
+        animationRef.current = requestAnimationFrame(detectFaces);
+        return;
+      }
+
+      lastFrameTimeRef.current = currentTime;
 
       const ctx = canvasElement.getContext('2d');
-      if (!ctx) return;
+      if (!ctx) {
+        animationRef.current = requestAnimationFrame(detectFaces);
+        return;
+      }
 
       try {
         const faces = await detectorRef.current.estimateFaces(videoElement);
@@ -66,7 +84,7 @@ export const useFaceDetection = (
     };
 
     initializeDetector().then(() => {
-      detectFaces();
+      animationRef.current = requestAnimationFrame(detectFaces);
     });
 
     return () => {

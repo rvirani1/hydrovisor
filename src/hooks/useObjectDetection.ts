@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-// @ts-ignore - inferencejs package has typing issues with exports resolution
+// @ts-expect-error - inferencejs package has typing issues with exports resolution
 import { InferenceEngine } from 'inferencejs';
 import { useHydrationStore } from '../store/hydrationStore';
 
@@ -12,6 +12,9 @@ interface Detection {
   height: number;
 }
 
+const OBJECT_DETECTION_FPS = 5;
+const OBJECT_FRAME_INTERVAL = 1000 / OBJECT_DETECTION_FPS;
+
 export const useObjectDetection = (
   videoElement: HTMLVideoElement | null,
   canvasElement: HTMLCanvasElement | null,
@@ -20,6 +23,7 @@ export const useObjectDetection = (
 ) => {
   const inferenceRef = useRef<InferenceEngine | null>(null);
   const animationRef = useRef<number>(0);
+  const lastFrameTimeRef = useRef<number>(0);
   const setObjectDetected = useHydrationStore((state) => state.setObjectDetected);
 
   useEffect(() => {
@@ -39,11 +43,25 @@ export const useObjectDetection = (
 
     let workerId: string | null = null;
 
-    const detectObjects = async () => {
-      if (!inferenceRef.current || !videoElement || !canvasElement || !workerId) return;
+    const detectObjects = async (currentTime: number) => {
+      if (!inferenceRef.current || !videoElement || !canvasElement || !workerId) {
+        animationRef.current = requestAnimationFrame(detectObjects);
+        return;
+      }
+
+      // Frame rate limiting - only process if enough time has passed
+      if (currentTime - lastFrameTimeRef.current < OBJECT_FRAME_INTERVAL) {
+        animationRef.current = requestAnimationFrame(detectObjects);
+        return;
+      }
+
+      lastFrameTimeRef.current = currentTime;
 
       const ctx = canvasElement.getContext('2d');
-      if (!ctx) return;
+      if (!ctx) {
+        animationRef.current = requestAnimationFrame(detectObjects);
+        return;
+      }
 
       try {
         const detections = await inferenceRef.current.infer(workerId, videoElement);
@@ -88,7 +106,7 @@ export const useObjectDetection = (
 
     initializeInference().then((id) => {
       workerId = id;
-      detectObjects();
+      animationRef.current = requestAnimationFrame(detectObjects);
     });
 
     return () => {

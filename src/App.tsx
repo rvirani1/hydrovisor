@@ -5,21 +5,20 @@ import { HydrationConfig } from './components/HydrationConfig';
 import { useFaceDetection } from './hooks/useFaceDetection';
 import { useObjectDetection } from './hooks/useObjectDetection';
 import { useDrinkingDetection } from './hooks/useDrinkingDetection';
-import { useHydrationStore } from './store/hydrationStore';
 
 function App() {
   const [videoElement, setVideoElement] = useState<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [apiKey, setApiKey] = useState<string>('');
-  const [modelId, setModelId] = useState<string>('');
-  const isTracking = useHydrationStore((state) => state.isTracking);
 
-  useFaceDetection(isTracking ? videoElement : null, canvasRef.current);
+  const apiKey = import.meta.env.VITE_ROBOFLOW_PUBLISHABLE_KEY;
+  const modelId = import.meta.env.VITE_ROBOFLOW_MODEL_ID;
+
+  useFaceDetection(videoElement, canvasRef.current);
   useObjectDetection(
-    isTracking ? videoElement : null, 
+    videoElement, 
     canvasRef.current, 
-    isTracking ? apiKey : null, 
-    isTracking ? modelId : null
+    apiKey, 
+    modelId
   );
   useDrinkingDetection();
 
@@ -39,12 +38,7 @@ function App() {
         </div>
 
         <div className="w-96 flex flex-col gap-6">
-          <HydrationConfig
-            apiKey={apiKey}
-            setApiKey={setApiKey}
-            modelId={modelId}
-            setModelId={setModelId}
-          />
+          <HydrationConfig />
           <HydrationStats />
         </div>
       </div>

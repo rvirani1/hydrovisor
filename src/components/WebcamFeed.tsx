@@ -42,10 +42,10 @@ export const WebcamFeed: React.FC<WebcamFeedProps> = ({ onVideoRef, canvasRef })
   }, [onVideoRef, setWebcamReady]);
 
   useEffect(() => {
+    const videoElement = videoRef.current;
     setupWebcam();
 
     return () => {
-      const videoElement = videoRef.current;
       if (videoElement && videoElement.srcObject) {
         const stream = videoElement.srcObject as MediaStream;
         stream.getTracks().forEach(track => track.stop());
