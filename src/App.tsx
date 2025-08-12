@@ -6,17 +6,16 @@ import { TimeSinceLastDrink } from './components/TimeSinceLastDrink';
 import { useFaceDetection } from './hooks/useFaceDetection';
 import { useObjectDetection } from './hooks/useObjectDetection';
 import { useDrinkingDetection } from './hooks/useDrinkingDetection';
+import { useCanvasRenderer } from './hooks/useCanvasRenderer';
 
 function App() {
   const [videoElement, setVideoElement] = useState<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  useFaceDetection(videoElement, canvasRef.current);
-  useObjectDetection(
-    videoElement, 
-    canvasRef.current, 
-  );
+  useFaceDetection(videoElement);
+  useObjectDetection(videoElement);
   useDrinkingDetection();
+  useCanvasRenderer(canvasRef.current);
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">

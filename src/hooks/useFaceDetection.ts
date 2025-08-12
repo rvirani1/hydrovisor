@@ -7,8 +7,7 @@ import { FRAME_RATES } from '../constants';
 const FACE_FRAME_INTERVAL = 1000 / FRAME_RATES.faceDetection;
 
 export const useFaceDetection = (
-  videoElement: HTMLVideoElement | null,
-  canvasElement: HTMLCanvasElement | null
+  videoElement: HTMLVideoElement | null
 ) => {
   const detectorRef = useRef<faceLandmarksDetection.FaceLandmarksDetector | null>(null);
   const animationRef = useRef<number>(0);
@@ -16,7 +15,7 @@ export const useFaceDetection = (
   const setFaceDetected = useHydrationStore((state) => state.setFaceDetected);
 
   useEffect(() => {
-    if (!videoElement || !canvasElement) return;
+    if (!videoElement) return;
 
     const initializeDetector = async () => {
       const model = faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh;
@@ -31,7 +30,7 @@ export const useFaceDetection = (
     };
 
     const detectFaces = async (currentTime: number) => {
-      if (!detectorRef.current || !videoElement || !canvasElement) {
+      if (!detectorRef.current || !videoElement) {
         animationRef.current = requestAnimationFrame(detectFaces);
         return;
       }
@@ -44,37 +43,14 @@ export const useFaceDetection = (
 
       lastFrameTimeRef.current = currentTime;
 
-      const ctx = canvasElement.getContext('2d');
-      if (!ctx) {
-        animationRef.current = requestAnimationFrame(detectFaces);
-        return;
-      }
-
       try {
         const faces = await detectorRef.current.estimateFaces(videoElement);
         
-        ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-        
         if (faces.length > 0) {
-          setFaceDetected(true);
           const face = faces[0];
-          
-          ctx.strokeStyle = '#00ff00';
-          ctx.lineWidth = 2;
-          
-          const box = face.box;
-          if (box) {
-            ctx.strokeRect(box.xMin, box.yMin, box.width, box.height);
-          }
-          
-          ctx.fillStyle = '#00ff00';
-          face.keypoints.forEach((keypoint) => {
-            ctx.beginPath();
-            ctx.arc(keypoint.x, keypoint.y, 2, 0, 2 * Math.PI);
-            ctx.fill();
-          });
+          setFaceDetected(true, face.box || null, face.keypoints || null);
         } else {
-          setFaceDetected(false);
+          setFaceDetected(false, null, null);
         }
       } catch (error) {
         console.error('Face detection error:', error);
@@ -95,7 +71,7 @@ export const useFaceDetection = (
         detectorRef.current = null;
       }
     };
-  }, [videoElement, canvasElement, setFaceDetected]);
+  }, [videoElement, setFaceDetected]);
 
   return null;
 };

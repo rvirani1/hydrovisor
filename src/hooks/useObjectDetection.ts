@@ -16,8 +16,7 @@ interface Detection {
 const OBJECT_FRAME_INTERVAL = 1000 / FRAME_RATES.objectDetection;
 
 export const useObjectDetection = (
-  videoElement: HTMLVideoElement | null,
-  canvasElement: HTMLCanvasElement | null,
+  videoElement: HTMLVideoElement | null
 ) => {
   const inferenceRef = useRef<InferenceEngine | null>(null);
   const animationRef = useRef<number>(0);
@@ -25,7 +24,7 @@ export const useObjectDetection = (
   const setObjectDetected = useHydrationStore((state) => state.setObjectDetected);
 
   useEffect(() => {
-    if (!videoElement || !canvasElement) return;
+    if (!videoElement) return;
 
     const initializeInference = async () => {
       inferenceRef.current = new InferenceEngine();
@@ -42,7 +41,7 @@ export const useObjectDetection = (
     let workerId: string | null = null;
 
     const detectObjects = async (currentTime: number) => {
-      if (!inferenceRef.current || !videoElement || !canvasElement || !workerId) {
+      if (!inferenceRef.current || !videoElement || !workerId) {
         animationRef.current = requestAnimationFrame(detectObjects);
         return;
       }
@@ -55,15 +54,10 @@ export const useObjectDetection = (
 
       lastFrameTimeRef.current = currentTime;
 
-      const ctx = canvasElement.getContext('2d');
-      if (!ctx) {
-        animationRef.current = requestAnimationFrame(detectObjects);
-        return;
-      }
-
       try {
         const image = new CVImage(videoElement);
         const detections = await inferenceRef.current.infer(workerId, image);
+        console.log('detections', detections);
         
         const drinkingObjects = detections.filter((d: Detection) => 
           DETECTION_CLASSES.includes(d.class.toLowerCase())
@@ -76,25 +70,11 @@ export const useObjectDetection = (
 
           setObjectDetected(
             true, 
-            primaryObject.class.toLowerCase() as DetectedObject
+            primaryObject.class.toLowerCase() as DetectedObject,
+            drinkingObjects
           );
-
-          ctx.strokeStyle = '#ff0000';
-          ctx.lineWidth = 3;
-          ctx.font = '16px Arial';
-          ctx.fillStyle = '#ff0000';
-
-          drinkingObjects.forEach((detection: Detection) => {
-            const x = detection.x - detection.width / 2;
-            const y = detection.y - detection.height / 2;
-            
-            ctx.strokeRect(x, y, detection.width, detection.height);
-            
-            const label = `${detection.class} (${Math.round(detection.confidence * 100)}%)`;
-            ctx.fillText(label, x, y - 5);
-          });
         } else {
-          setObjectDetected(false);
+          setObjectDetected(false, null, null);
         }
       } catch (error) {
         console.error('Object detection error:', error);
@@ -116,7 +96,7 @@ export const useObjectDetection = (
         inferenceRef.current = null;
       }
     };
-  }, [videoElement, canvasElement, setObjectDetected]);
+  }, [videoElement, setObjectDetected]);
 
   return null;
 };
