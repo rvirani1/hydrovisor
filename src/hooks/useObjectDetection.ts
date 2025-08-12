@@ -67,23 +67,26 @@ export const useObjectDetection = (
         );
 
         if (drinkingObjects.length > 0) {
-          const primaryObject = drinkingObjects.reduce((prev: Detection, current: Detection) => 
-            (prev.confidence > current.confidence) ? prev : current
-          );
+          // Find the largest cup by area (width * height)
+          const largestCup = drinkingObjects.reduce((prev: Detection, current: Detection) => {
+            const prevArea = prev.bbox.width * prev.bbox.height;
+            const currentArea = current.bbox.width * current.bbox.height;
+            return currentArea > prevArea ? current : prev;
+          });
 
-          // Convert bbox format to our store format
-          const detectionData = drinkingObjects.map((d: Detection) => ({
-            class: d.class,
-            confidence: d.confidence,
-            x: d.bbox.x,
-            y: d.bbox.y,
-            width: d.bbox.width,
-            height: d.bbox.height
-          }));
+          // Only keep the largest cup for tracking
+          const detectionData = [{
+            class: largestCup.class,
+            confidence: largestCup.confidence,
+            x: largestCup.bbox.x,
+            y: largestCup.bbox.y,
+            width: largestCup.bbox.width,
+            height: largestCup.bbox.height
+          }];
 
           setObjectDetected(
             true, 
-            primaryObject.class.toLowerCase() as DetectedObject,
+            largestCup.class.toLowerCase() as DetectedObject,
             detectionData
           );
         } else {
