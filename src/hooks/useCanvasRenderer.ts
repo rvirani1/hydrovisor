@@ -58,29 +58,20 @@ export const useCanvasRenderer = (
 
       // Draw object detections if present
       if (state.objectDetected && state.objectDetections) {
-        ctx.strokeStyle = '#ff0000';
-        ctx.lineWidth = 3;
-        ctx.font = '16px Arial';
-        ctx.fillStyle = '#ff0000';
-
         state.objectDetections.forEach((detection) => {
-          const x = detection.x - detection.width / 2;
-          const y = detection.y - detection.height / 2;
+          // x, y are center points, so calculate top-left corner
+          const topLeftX = detection.x - detection.width / 2;
+          const topLeftY = detection.y - detection.height / 2;
           
-          ctx.strokeRect(x, y, detection.width, detection.height);
+          // Blue semi-transparent fill
+          ctx.fillStyle = 'rgba(59, 130, 246, 0.2)';
+          ctx.fillRect(topLeftX, topLeftY, detection.width, detection.height);
           
-          const label = `${detection.class} (${Math.round(detection.confidence * 100)}%)`;
-          ctx.fillText(label, x, y - 5);
+          // Blue border
+          ctx.strokeStyle = '#3b82f6';
+          ctx.lineWidth = 3;
+          ctx.strokeRect(topLeftX, topLeftY, detection.width, detection.height);
         });
-      }
-
-      // Draw drinking indicator if active
-      if (state.isDrinking) {
-        ctx.fillStyle = 'rgba(0, 255, 0, 0.3)';
-        ctx.fillRect(0, 0, canvasElement.width, 40);
-        ctx.fillStyle = '#00ff00';
-        ctx.font = 'bold 20px Arial';
-        ctx.fillText('DRINKING DETECTED! 💧', 10, 28);
       }
 
       animationRef.current = requestAnimationFrame(render);

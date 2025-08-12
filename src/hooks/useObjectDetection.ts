@@ -7,10 +7,13 @@ import { DETECTION_CLASSES, FRAME_RATES, ROBOFLOW_CONFIG, type DetectedObject } 
 interface Detection {
   class: string;
   confidence: number;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
+  bbox: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+  color?: string;
 }
 
 const OBJECT_FRAME_INTERVAL = 1000 / FRAME_RATES.objectDetection;
@@ -68,10 +71,20 @@ export const useObjectDetection = (
             (prev.confidence > current.confidence) ? prev : current
           );
 
+          // Convert bbox format to our store format
+          const detectionData = drinkingObjects.map((d: Detection) => ({
+            class: d.class,
+            confidence: d.confidence,
+            x: d.bbox.x,
+            y: d.bbox.y,
+            width: d.bbox.width,
+            height: d.bbox.height
+          }));
+
           setObjectDetected(
             true, 
             primaryObject.class.toLowerCase() as DetectedObject,
-            drinkingObjects
+            detectionData
           );
         } else {
           setObjectDetected(false, null, null);
