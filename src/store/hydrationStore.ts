@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { type DetectedObject } from '../constants';
 
 interface HydrationEvent {
@@ -40,7 +41,9 @@ interface HydrationStore {
   reset: () => void;
 }
 
-export const useHydrationStore = create<HydrationStore>((set, get) => ({
+export const useHydrationStore = create<HydrationStore>()(
+  persist(
+    (set, get) => ({
   hydrationEvents: [],
   trackingStartTime: new Date(),
   hydrationIntervalMinutes: 3,
@@ -159,4 +162,12 @@ export const useHydrationStore = create<HydrationStore>((set, get) => ({
     // Reset tracking start time to now
     trackingStartTime: new Date(),
   })),
-}));
+    }),
+    {
+      name: 'hydrovisor-storage',
+      partialize: (state) => ({ 
+        hydrationIntervalMinutes: state.hydrationIntervalMinutes 
+      }),
+    }
+  )
+);
