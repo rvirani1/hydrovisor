@@ -31,7 +31,7 @@ export const HydrationStats: React.FC = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
     >
-      <Card className="backdrop-blur-lg bg-white/90 dark:bg-gray-900/90 border-gray-200/50 dark:border-gray-800/50 shadow-xl">
+      <Card className="backdrop-blur-sm bg-white/50 dark:bg-gray-900/50 border-0">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -77,7 +77,7 @@ export const HydrationStats: React.FC = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ type: "spring", stiffness: 200 }}
               >
-                <Alert className="border-orange-200 bg-orange-50 dark:bg-orange-900/20">
+                <Alert className="border-0 bg-orange-50/50 dark:bg-orange-900/10">
                   <AlertTriangle className="h-4 w-4 text-orange-600" />
                   <AlertDescription className="text-orange-800 dark:text-orange-200">
                     Time to hydrate! You're overdue for a drink.
@@ -90,7 +90,7 @@ export const HydrationStats: React.FC = () => {
           {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-4">
             <motion.div 
-              className="p-4 rounded-lg bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 border border-blue-200/50 dark:border-blue-800/50"
+              className="p-4 rounded-lg bg-blue-50/50 dark:bg-blue-900/10"
               whileHover={{ scale: 1.02 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
@@ -103,7 +103,7 @@ export const HydrationStats: React.FC = () => {
             </motion.div>
 
             <motion.div 
-              className="p-4 rounded-lg bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border border-purple-200/50 dark:border-purple-800/50"
+              className="p-4 rounded-lg bg-purple-50/50 dark:bg-purple-900/10"
               whileHover={{ scale: 1.02 }}
               transition={{ type: "spring", stiffness: 300 }}
             >

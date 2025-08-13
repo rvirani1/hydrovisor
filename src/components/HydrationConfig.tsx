@@ -62,8 +62,8 @@ export const HydrationConfig: React.FC = () => {
             
             <div className="flex justify-between text-xs text-gray-500">
               <span>1 min</span>
-              <span>30 min</span>
-              <span>60 min</span>
+              <span>5 min</span>
+              <span>15 min</span>
             </div>
           </div>
 
@@ -83,7 +83,7 @@ export const HydrationConfig: React.FC = () => {
           <div className="space-y-2">
             <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">Quick Settings</p>
             <div className="grid grid-cols-3 gap-2">
-              {[5, 15, 30].map((minutes) => (
+              {[1, 5, 15].map((minutes) => (
                 <motion.div key={minutes} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Button
                     variant={hydrationIntervalMinutes === minutes ? "default" : "outline"}

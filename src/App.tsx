@@ -10,7 +10,7 @@ import { useObjectDetection } from '@/hooks/useObjectDetection';
 import { useDrinkingDetection } from '@/hooks/useDrinkingDetection';
 import { useCanvasRenderer } from '@/hooks/useCanvasRenderer';
 import { useHydrationStore } from '@/store/hydrationStore';
-import { Settings, Camera } from 'lucide-react';
+import { Settings } from 'lucide-react';
 import logo from '@/assets/logo.png';
 
 const containerVariants = {
@@ -84,7 +84,7 @@ function App() {
         {/* Header */}
         <motion.header 
           variants={itemVariants}
-          className="backdrop-blur-lg bg-white/70 dark:bg-gray-900/70 border-b border-gray-200/50 dark:border-gray-800/50"
+          className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm"
         >
           <div className="container mx-auto px-4 py-4 md:py-6">
             <div className="flex items-center justify-between">
@@ -127,26 +127,10 @@ function App() {
               variants={itemVariants}
               className="lg:col-span-7 xl:col-span-8"
             >
-              <div className="relative">
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl blur opacity-30 group-hover:opacity-40 transition duration-1000"></div>
-                <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden">
-                  <div className="p-4 md:p-6">
-                    <div className="flex items-center gap-2 mb-4">
-                      <Camera className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                      <h2 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-gray-100">
-                        Live Monitoring
-                      </h2>
-                      <span className="ml-auto px-2 py-1 text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded-full animate-pulse">
-                        Active
-                      </span>
-                    </div>
-                    <WebcamFeed 
-                      onVideoRef={setVideoElement} 
-                      canvasRef={canvasRef as React.RefObject<HTMLCanvasElement>}
-                    />
-                  </div>
-                </div>
-              </div>
+              <WebcamFeed 
+                onVideoRef={setVideoElement} 
+                canvasRef={canvasRef as React.RefObject<HTMLCanvasElement>}
+              />
             </motion.div>
 
             {/* Stats Section */}
