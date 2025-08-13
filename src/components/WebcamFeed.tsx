@@ -28,6 +28,12 @@ export const WebcamFeed: React.FC<WebcamFeedProps> = ({ onVideoRef, canvasRef })
         audio: false
       });
 
+      // Guard against null video ref
+      if (!videoRef.current) {
+        console.warn('Video ref became null during setup');
+        return;
+      }
+      
       videoRef.current.srcObject = stream;
       
       await new Promise<void>((resolve) => {
@@ -38,6 +44,7 @@ export const WebcamFeed: React.FC<WebcamFeedProps> = ({ onVideoRef, canvasRef })
       });
 
       await videoRef.current.play();
+      console.log('Webcam ready');
       setWebcamReady(true);
       onVideoRef(videoRef.current);
       setError(null);
@@ -56,10 +63,20 @@ export const WebcamFeed: React.FC<WebcamFeedProps> = ({ onVideoRef, canvasRef })
   }, [onVideoRef, setWebcamReady, setIsTracking, isTracking]);
 
   useEffect(() => {
-    const videoElement = videoRef.current;
-    setupWebcam();
+    // Prevent multiple webcam setups
+    let isMounted = true;
+    
+    const initWebcam = async () => {
+      if (isMounted) {
+        await setupWebcam();
+      }
+    };
+    
+    initWebcam();
 
     return () => {
+      isMounted = false;
+      const videoElement = videoRef.current;
       if (videoElement && videoElement.srcObject) {
         const stream = videoElement.srcObject as MediaStream;
         stream.getTracks().forEach(track => track.stop());

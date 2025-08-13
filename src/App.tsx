@@ -1,13 +1,15 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WebcamFeed } from '@/components/WebcamFeed';
 import { HydrationStats } from '@/components/HydrationStats';
 import { HydrationConfig } from '@/components/HydrationConfig';
 import { TimeSinceLastDrink } from '@/components/TimeSinceLastDrink';
+import { LoadingScreen } from '@/components/LoadingScreen';
 import { useFaceDetection } from '@/hooks/useFaceDetection';
 import { useObjectDetection } from '@/hooks/useObjectDetection';
 import { useDrinkingDetection } from '@/hooks/useDrinkingDetection';
 import { useCanvasRenderer } from '@/hooks/useCanvasRenderer';
+import { useHydrationStore } from '@/store/hydrationStore';
 import { Activity, Camera } from 'lucide-react';
 import logo from '@/assets/logo.png';
 
@@ -38,6 +40,20 @@ const itemVariants = {
 function App() {
   const [videoElement, setVideoElement] = useState<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const isFullyInitialized = useHydrationStore((state) => state.isFullyInitialized());
+  const webcamReady = useHydrationStore((state) => state.webcamReady);
+  const faceDetectorReady = useHydrationStore((state) => state.faceDetectorReady);
+  const objectDetectorReady = useHydrationStore((state) => state.objectDetectorReady);
+
+  // Debug logging
+  useEffect(() => {
+    console.log('Initialization status:', {
+      webcamReady,
+      faceDetectorReady,
+      objectDetectorReady,
+      isFullyInitialized
+    });
+  }, [webcamReady, faceDetectorReady, objectDetectorReady, isFullyInitialized]);
 
   useFaceDetection(videoElement);
   useObjectDetection(videoElement);
@@ -45,7 +61,12 @@ function App() {
   useCanvasRenderer(canvasRef.current);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-gray-950 dark:via-gray-900 dark:to-blue-950">
+    <>
+      {/* Show loading screen as overlay while models initialize */}
+      {!isFullyInitialized && <LoadingScreen />}
+
+      {/* Main UI - render but hide during initialization */}
+      <div className={`min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-gray-950 dark:via-gray-900 dark:to-blue-950 ${!isFullyInitialized ? 'opacity-0 pointer-events-none' : ''}`}>
       {/* Animated Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
@@ -143,6 +164,7 @@ function App() {
         </AnimatePresence>
       </motion.div>
     </div>
+    </>
   );
 }
 

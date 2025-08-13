@@ -13,20 +13,29 @@ export const useFaceDetection = (
   const animationRef = useRef<number>(0);
   const lastFrameTimeRef = useRef<number>(0);
   const setFaceDetected = useHydrationStore((state) => state.setFaceDetected);
+  const setFaceDetectorReady = useHydrationStore((state) => state.setFaceDetectorReady);
 
   useEffect(() => {
     if (!videoElement) return;
 
     const initializeDetector = async () => {
-      const model = faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh;
-      const detectorConfig: faceLandmarksDetection.MediaPipeFaceMeshMediaPipeModelConfig = {
-        runtime: 'mediapipe',
-        solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh',
-        maxFaces: 1,
-        refineLandmarks: false,
-      };
+      try {
+        console.log('Initializing face detector...');
+        const model = faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh;
+        const detectorConfig: faceLandmarksDetection.MediaPipeFaceMeshMediaPipeModelConfig = {
+          runtime: 'mediapipe',
+          solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh',
+          maxFaces: 1,
+          refineLandmarks: false,
+        };
 
-      detectorRef.current = await faceLandmarksDetection.createDetector(model, detectorConfig);
+        detectorRef.current = await faceLandmarksDetection.createDetector(model, detectorConfig);
+        console.log('Face detector initialized successfully');
+        setFaceDetectorReady(true);
+      } catch (error) {
+        console.error('Failed to initialize face detector:', error);
+        setFaceDetectorReady(false);
+      }
     };
 
     const detectFaces = async (currentTime: number) => {
@@ -69,9 +78,10 @@ export const useFaceDetection = (
       }
       if (detectorRef.current) {
         detectorRef.current = null;
+        setFaceDetectorReady(false);
       }
     };
-  }, [videoElement, setFaceDetected]);
+  }, [videoElement, setFaceDetected, setFaceDetectorReady]);
 
   return null;
 };

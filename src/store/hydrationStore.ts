@@ -13,6 +13,8 @@ interface HydrationStore {
   hydrationIntervalMinutes: number;
   lastHydrationTime: Date | null;
   webcamReady: boolean;
+  faceDetectorReady: boolean;
+  objectDetectorReady: boolean;
   faceDetected: boolean;
   faceBox: { xMin: number; yMin: number; width: number; height: number } | null;
   faceKeypoints: Array<{ x: number; y: number }> | null;
@@ -26,6 +28,8 @@ interface HydrationStore {
   setIsTracking: (tracking: boolean) => void;
   setHydrationInterval: (minutes: number) => void;
   setWebcamReady: (ready: boolean) => void;
+  setFaceDetectorReady: (ready: boolean) => void;
+  setObjectDetectorReady: (ready: boolean) => void;
   setFaceDetected: (detected: boolean, box?: { xMin: number; yMin: number; width: number; height: number } | null, keypoints?: Array<{ x: number; y: number }> | null) => void;
   setObjectDetected: (detected: boolean, object?: DetectedObject | null, detections?: Array<{ class: string; confidence: number; x: number; y: number; width: number; height: number }> | null) => void;
   setIsDrinking: (drinking: boolean) => void;
@@ -34,6 +38,7 @@ interface HydrationStore {
   getTimeSinceLastHydration: () => number | null;
   isOverdue: () => boolean;
   getTodayHydrationCount: () => number;
+  isFullyInitialized: () => boolean;
   reset: () => void;
 }
 
@@ -44,6 +49,8 @@ export const useHydrationStore = create<HydrationStore>((set, get) => ({
   hydrationIntervalMinutes: 3,
   lastHydrationTime: null,
   webcamReady: false,
+  faceDetectorReady: false,
+  objectDetectorReady: false,
   faceDetected: false,
   faceBox: null,
   faceKeypoints: null,
@@ -70,6 +77,10 @@ export const useHydrationStore = create<HydrationStore>((set, get) => ({
   setHydrationInterval: (minutes) => set({ hydrationIntervalMinutes: minutes }),
   
   setWebcamReady: (ready) => set({ webcamReady: ready }),
+  
+  setFaceDetectorReady: (ready) => set({ faceDetectorReady: ready }),
+  
+  setObjectDetectorReady: (ready) => set({ objectDetectorReady: ready }),
   
   setFaceDetected: (detected, box = null, keypoints = null) => set({ 
     faceDetected: detected,
@@ -132,6 +143,11 @@ export const useHydrationStore = create<HydrationStore>((set, get) => ({
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     return state.hydrationEvents.filter(event => event.timestamp >= today).length;
+  },
+  
+  isFullyInitialized: () => {
+    const state = get();
+    return state.webcamReady && state.faceDetectorReady && state.objectDetectorReady;
   },
   
   reset: () => set((state) => ({

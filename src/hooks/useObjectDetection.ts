@@ -25,20 +25,30 @@ export const useObjectDetection = (
   const animationRef = useRef<number>(0);
   const lastFrameTimeRef = useRef<number>(0);
   const setObjectDetected = useHydrationStore((state) => state.setObjectDetected);
+  const setObjectDetectorReady = useHydrationStore((state) => state.setObjectDetectorReady);
 
   useEffect(() => {
     if (!videoElement) return;
 
     const initializeInference = async () => {
-      inferenceRef.current = new InferenceEngine();
-      
-      const workerId = await inferenceRef.current.startWorker(
-        ROBOFLOW_CONFIG.modelName,
-        ROBOFLOW_CONFIG.modelVersion,
-        ROBOFLOW_CONFIG.publishableKey
-      );
-
-      return workerId;
+      try {
+        console.log('Initializing object detector...');
+        inferenceRef.current = new InferenceEngine();
+        
+        const workerId = await inferenceRef.current.startWorker(
+          ROBOFLOW_CONFIG.modelName,
+          ROBOFLOW_CONFIG.modelVersion,
+          ROBOFLOW_CONFIG.publishableKey
+        );
+        
+        console.log('Object detector initialized successfully');
+        setObjectDetectorReady(true);
+        return workerId;
+      } catch (error) {
+        console.error('Failed to initialize object detector:', error);
+        setObjectDetectorReady(false);
+        return null;
+      }
     };
 
     let workerId: string | null = null;
@@ -110,9 +120,10 @@ export const useObjectDetection = (
       }
       if (inferenceRef.current) {
         inferenceRef.current = null;
+        setObjectDetectorReady(false);
       }
     };
-  }, [videoElement, setObjectDetected]);
+  }, [videoElement, setObjectDetected, setObjectDetectorReady]);
 
   return null;
 };
