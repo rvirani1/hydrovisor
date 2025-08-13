@@ -2,15 +2,15 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WebcamFeed } from '@/components/WebcamFeed';
 import { HydrationStats } from '@/components/HydrationStats';
-import { HydrationConfig } from '@/components/HydrationConfig';
 import { TimeSinceLastDrink } from '@/components/TimeSinceLastDrink';
 import { LoadingScreen } from '@/components/LoadingScreen';
+import { SettingsModal } from '@/components/SettingsModal';
 import { useFaceDetection } from '@/hooks/useFaceDetection';
 import { useObjectDetection } from '@/hooks/useObjectDetection';
 import { useDrinkingDetection } from '@/hooks/useDrinkingDetection';
 import { useCanvasRenderer } from '@/hooks/useCanvasRenderer';
 import { useHydrationStore } from '@/store/hydrationStore';
-import { Activity, Camera } from 'lucide-react';
+import { Settings, Camera } from 'lucide-react';
 import logo from '@/assets/logo.png';
 
 const containerVariants = {
@@ -39,6 +39,7 @@ const itemVariants = {
 
 function App() {
   const [videoElement, setVideoElement] = useState<HTMLVideoElement | null>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isFullyInitialized = useHydrationStore((state) => state.isFullyInitialized());
   const webcamReady = useHydrationStore((state) => state.webcamReady);
@@ -105,13 +106,14 @@ function App() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <motion.div
+                <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
+                  onClick={() => setSettingsOpen(true)}
+                  className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors cursor-pointer"
                 >
-                  <Activity className="h-5 w-5" />
-                </motion.div>
+                  <Settings className="h-5 w-5" />
+                </motion.button>
               </div>
             </div>
           </div>
@@ -147,12 +149,11 @@ function App() {
               </div>
             </motion.div>
 
-            {/* Stats & Config Section */}
+            {/* Stats Section */}
             <motion.div 
               variants={itemVariants}
-              className="lg:col-span-5 xl:col-span-4 space-y-6"
+              className="lg:col-span-5 xl:col-span-4"
             >
-              <HydrationConfig />
               <HydrationStats />
             </motion.div>
           </div>
@@ -164,6 +165,9 @@ function App() {
         </AnimatePresence>
       </motion.div>
     </div>
+    
+    {/* Settings Modal */}
+    <SettingsModal open={settingsOpen} onOpenChange={setSettingsOpen} />
     </>
   );
 }
