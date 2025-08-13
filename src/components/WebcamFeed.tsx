@@ -10,7 +10,7 @@ interface WebcamFeedProps {
 
 export const WebcamFeed: React.FC<WebcamFeedProps> = ({ onVideoRef, canvasRef }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const { setWebcamReady, setIsTracking, isTracking } = useHydrationStore();
+  const { setWebcamReady } = useHydrationStore();
   const [error, setError] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(true);
 
@@ -48,11 +48,6 @@ export const WebcamFeed: React.FC<WebcamFeedProps> = ({ onVideoRef, canvasRef })
       setWebcamReady(true);
       onVideoRef(videoRef.current);
       setError(null);
-      
-      // Auto-start tracking when webcam is ready
-      if (!isTracking) {
-        setIsTracking(true);
-      }
     } catch (error) {
       console.error('Error accessing webcam:', error);
       setError('Unable to access camera. Please check permissions.');
@@ -60,7 +55,7 @@ export const WebcamFeed: React.FC<WebcamFeedProps> = ({ onVideoRef, canvasRef })
     } finally {
       setLoading(false);
     }
-  }, [onVideoRef, setWebcamReady, setIsTracking, isTracking]);
+  }, [onVideoRef, setWebcamReady]);
 
   useEffect(() => {
     // Prevent multiple webcam setups

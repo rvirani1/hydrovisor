@@ -5,14 +5,12 @@ import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useHydrationStore } from '@/store/hydrationStore';
-import { Settings, Play, Pause, RotateCcw, Timer } from 'lucide-react';
+import { Settings, RotateCcw, Timer } from 'lucide-react';
 
 export const HydrationConfig: React.FC = () => {
   const {
     hydrationIntervalMinutes,
     setHydrationInterval,
-    isTracking,
-    setIsTracking,
     reset,
   } = useHydrationStore();
 
@@ -33,8 +31,8 @@ export const HydrationConfig: React.FC = () => {
               <Settings className="h-5 w-5 text-blue-600 dark:text-blue-400" />
               <CardTitle>Settings</CardTitle>
             </div>
-            <Badge variant={isTracking ? "default" : "secondary"}>
-              {isTracking ? "Tracking Active" : "Tracking Paused"}
+            <Badge variant="default">
+              Tracking Active
             </Badge>
           </div>
           <CardDescription>Configure your hydration preferences</CardDescription>
@@ -69,39 +67,17 @@ export const HydrationConfig: React.FC = () => {
             </div>
           </div>
 
-          {/* Control Buttons */}
-          <div className="grid grid-cols-2 gap-3">
-            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <Button
-                onClick={() => setIsTracking(!isTracking)}
-                variant={isTracking ? "destructive" : "default"}
-                className="w-full"
-              >
-                {isTracking ? (
-                  <>
-                    <Pause className="h-4 w-4 mr-2" />
-                    Pause
-                  </>
-                ) : (
-                  <>
-                    <Play className="h-4 w-4 mr-2" />
-                    Start
-                  </>
-                )}
-              </Button>
-            </motion.div>
-            
-            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <Button
-                onClick={reset}
-                variant="outline"
-                className="w-full"
-              >
-                <RotateCcw className="h-4 w-4 mr-2" />
-                Reset
-              </Button>
-            </motion.div>
-          </div>
+          {/* Reset Button */}
+          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+            <Button
+              onClick={reset}
+              variant="outline"
+              className="w-full"
+            >
+              <RotateCcw className="h-4 w-4 mr-2" />
+              Reset Stats
+            </Button>
+          </motion.div>
 
           {/* Quick Settings */}
           <div className="space-y-2">

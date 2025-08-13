@@ -4,7 +4,7 @@ import { useHydrationStore } from '@/store/hydrationStore';
 import { Clock, Droplets, AlertTriangle } from 'lucide-react';
 
 export const TimeSinceLastDrink: React.FC = () => {
-  const { getTimeSinceLastHydration, isOverdue, hydrationIntervalMinutes, isTracking, lastHydrationTime } = useHydrationStore();
+  const { getTimeSinceLastHydration, isOverdue, hydrationIntervalMinutes, lastHydrationTime } = useHydrationStore();
   const [, forceUpdate] = useState(0);
 
   // Update component every second for real-time display
@@ -43,7 +43,7 @@ export const TimeSinceLastDrink: React.FC = () => {
 
   const getStatusText = () => {
     if (timeSinceLastDrinkSeconds === null) {
-      return isTracking ? 'Tracking started' : 'Not tracking';
+      return 'Tracking started';
     }
     if (overdue) return 'Time to hydrate!';
     const timeSinceMinutes = Math.floor(timeSinceLastDrinkSeconds / 60);
@@ -59,7 +59,7 @@ export const TimeSinceLastDrink: React.FC = () => {
   };
 
   // Don't show the component when tracking is off
-  if (!isTracking) return null;
+  // Always show the timer since tracking is always on
 
   return (
     <AnimatePresence>

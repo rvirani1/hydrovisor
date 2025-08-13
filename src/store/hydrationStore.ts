@@ -8,7 +8,6 @@ interface HydrationEvent {
 
 interface HydrationStore {
   hydrationEvents: HydrationEvent[];
-  isTracking: boolean;
   trackingStartTime: Date | null;
   hydrationIntervalMinutes: number;
   lastHydrationTime: Date | null;
@@ -25,7 +24,6 @@ interface HydrationStore {
   drinkingStartTime: Date | null;
   
   addHydrationEvent: (object: DetectedObject) => void;
-  setIsTracking: (tracking: boolean) => void;
   setHydrationInterval: (minutes: number) => void;
   setWebcamReady: (ready: boolean) => void;
   setFaceDetectorReady: (ready: boolean) => void;
@@ -44,8 +42,7 @@ interface HydrationStore {
 
 export const useHydrationStore = create<HydrationStore>((set, get) => ({
   hydrationEvents: [],
-  isTracking: false,
-  trackingStartTime: null,
+  trackingStartTime: new Date(),
   hydrationIntervalMinutes: 3,
   lastHydrationTime: null,
   webcamReady: false,
@@ -69,14 +66,12 @@ export const useHydrationStore = create<HydrationStore>((set, get) => ({
     }));
   },
   
-  setIsTracking: (tracking) => set((state) => ({ 
-    isTracking: tracking,
-    trackingStartTime: tracking && !state.trackingStartTime ? new Date() : state.trackingStartTime
-  })),
-  
   setHydrationInterval: (minutes) => set({ hydrationIntervalMinutes: minutes }),
   
-  setWebcamReady: (ready) => set({ webcamReady: ready }),
+  setWebcamReady: (ready) => set((state) => ({ 
+    webcamReady: ready,
+    trackingStartTime: ready && !state.trackingStartTime ? new Date() : state.trackingStartTime
+  })),
   
   setFaceDetectorReady: (ready) => set({ faceDetectorReady: ready }),
   
@@ -123,7 +118,7 @@ export const useHydrationStore = create<HydrationStore>((set, get) => ({
       return Math.floor((Date.now() - state.lastHydrationTime.getTime()) / 1000);
     }
     // If tracking started but no drinks yet, count from tracking start time
-    if (state.trackingStartTime && state.isTracking) {
+    if (state.trackingStartTime) {
       return Math.floor((Date.now() - state.trackingStartTime.getTime()) / 1000);
     }
     // No tracking started yet
@@ -150,7 +145,7 @@ export const useHydrationStore = create<HydrationStore>((set, get) => ({
     return state.webcamReady && state.faceDetectorReady && state.objectDetectorReady;
   },
   
-  reset: () => set((state) => ({
+  reset: () => set(() => ({
     hydrationEvents: [],
     lastHydrationTime: null,
     faceDetected: false,
@@ -161,7 +156,7 @@ export const useHydrationStore = create<HydrationStore>((set, get) => ({
     currentObject: null,
     isDrinking: false,
     drinkingStartTime: null,
-    // Reset tracking start time to now, keeping tracking active
-    trackingStartTime: state.isTracking ? new Date() : state.trackingStartTime,
+    // Reset tracking start time to now
+    trackingStartTime: new Date(),
   })),
 }));
