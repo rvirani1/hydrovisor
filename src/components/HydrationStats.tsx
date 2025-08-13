@@ -10,7 +10,6 @@ export const HydrationStats: React.FC = () => {
     hydrationIntervalMinutes,
     isDrinking,
     objectDetected,
-    currentObject,
   } = useHydrationStore();
 
   const timeSinceLastHydrationSeconds = getTimeSinceLastHydration();
@@ -28,7 +27,7 @@ export const HydrationStats: React.FC = () => {
           <span className={`w-2 h-2 rounded-full ${
             objectDetected ? 'bg-green-500' : 'bg-gray-400'
           }`}></span>
-          {currentObject ? `${currentObject} Detected` : 'Object Detected'}
+          Cup Detected
         </div>
         <div className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-all ${
           isDrinking ? 'bg-orange-100 text-orange-700 animate-pulse' : 'bg-gray-100 text-gray-600'

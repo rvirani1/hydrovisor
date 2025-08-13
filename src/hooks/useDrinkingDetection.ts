@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { useHydrationStore } from '../store/hydrationStore';
-import { detectDrinking, ConsecutiveFrameTracker } from '../utils/overlapDetection';
+import { detectDrinking } from '../utils/overlapDetection';
 
-const REQUIRED_CONSECUTIVE_FRAMES = 3; // Require 3 consecutive frames of overlap
-const OVERLAP_THRESHOLD = 0.05; // 5% IoU threshold for drinking detection
+const OVERLAP_THRESHOLD = 0.02; // 2% IoU threshold for drinking detection
+const DEBOUNCE_MS = 500; // Wait 500ms after last detection before stopping
+const MIN_DRINKING_FRAMES = 3; // Minimum frames to start drinking
 
 export const useDrinkingDetection = () => {
   const {
@@ -14,10 +15,20 @@ export const useDrinkingDetection = () => {
     stopDrinking,
   } = useHydrationStore();
 
-  const drinkingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const frameTrackerRef = useRef(new ConsecutiveFrameTracker(REQUIRED_CONSECUTIVE_FRAMES));
+  // Track timestamps instead of timeouts
+  const lastOverlapTimeRef = useRef<number>(0);
+  const overlapFrameCountRef = useRef<number>(0);
+  const lastCheckTimeRef = useRef<number>(0);
 
   useEffect(() => {
+    const now = Date.now();
+    
+    // Rate limit checks (only check every 100ms)
+    if (now - lastCheckTimeRef.current < 100) {
+      return;
+    }
+    lastCheckTimeRef.current = now;
+
     // Detect if lip area overlaps with any object
     const { isDrinking: isOverlapping } = detectDrinking(
       faceKeypoints,
@@ -25,32 +36,29 @@ export const useDrinkingDetection = () => {
       OVERLAP_THRESHOLD
     );
 
-    // Track consecutive frames
-    const hasConsecutiveFrames = frameTrackerRef.current.update(isOverlapping);
-
-    if (hasConsecutiveFrames && !isDrinking) {
-      // Start drinking after required consecutive frames
-      startDrinking();
+    if (isOverlapping) {
+      // Update last overlap time
+      lastOverlapTimeRef.current = now;
+      overlapFrameCountRef.current++;
       
-      if (drinkingTimeoutRef.current) {
-        clearTimeout(drinkingTimeoutRef.current);
+      // Start drinking after minimum frames
+      if (!isDrinking && overlapFrameCountRef.current >= MIN_DRINKING_FRAMES) {
+        console.log('Starting drinking detection');
+        startDrinking();
       }
-    } else if (!isOverlapping && isDrinking) {
-      // Stop drinking after a delay when overlap is lost
-      if (drinkingTimeoutRef.current) {
-        clearTimeout(drinkingTimeoutRef.current);
-      }
+    } else {
+      // Check if enough time has passed since last overlap
+      const timeSinceLastOverlap = now - lastOverlapTimeRef.current;
       
-      drinkingTimeoutRef.current = setTimeout(() => {
+      if (isDrinking && timeSinceLastOverlap > DEBOUNCE_MS) {
+        // Stop drinking if no overlap for DEBOUNCE_MS
+        console.log('Stopping drinking - no overlap for', timeSinceLastOverlap, 'ms');
         stopDrinking();
-        frameTrackerRef.current.reset();
-      }, 500);
-    }
-
-    return () => {
-      if (drinkingTimeoutRef.current) {
-        clearTimeout(drinkingTimeoutRef.current);
+        overlapFrameCountRef.current = 0;
+      } else if (!isDrinking && timeSinceLastOverlap > DEBOUNCE_MS) {
+        // Reset frame count if not drinking and no recent overlap
+        overlapFrameCountRef.current = 0;
       }
-    };
+    }
   }, [faceKeypoints, objectDetections, isDrinking, startDrinking, stopDrinking]);
 };

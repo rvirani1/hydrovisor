@@ -55,6 +55,7 @@ export const useHydrationStore = create<HydrationStore>((set, get) => ({
   
   addHydrationEvent: (object) => {
     const now = new Date();
+    console.log('Adding hydration event:', { object, time: now });
     set((state) => ({
       hydrationEvents: [...state.hydrationEvents, { timestamp: now, detectedObject: object }],
       lastHydrationTime: now,
@@ -90,10 +91,15 @@ export const useHydrationStore = create<HydrationStore>((set, get) => ({
   
   stopDrinking: () => {
     const state = get();
-    if (state.isDrinking && state.drinkingStartTime && state.currentObject) {
+    if (state.isDrinking && state.drinkingStartTime) {
       const drinkingDuration = Date.now() - state.drinkingStartTime.getTime();
+      console.log('Stopping drinking. Duration:', drinkingDuration, 'ms');
+      
+      // Use currentObject if available, otherwise default to 'cup'
       if (drinkingDuration > 2000) {
-        get().addHydrationEvent(state.currentObject);
+        const objectType = state.currentObject || 'cup';
+        console.log('Drinking duration > 2s, adding hydration event for:', objectType);
+        get().addHydrationEvent(objectType);
       }
     }
     set({ isDrinking: false, drinkingStartTime: null });

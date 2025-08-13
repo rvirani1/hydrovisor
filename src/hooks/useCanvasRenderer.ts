@@ -40,7 +40,7 @@ export const useCanvasRenderer = (
       if (state.faceDetected && state.faceBox) {
         // Draw face bounding box
         ctx.strokeStyle = '#00ff00';
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1;
         ctx.strokeRect(
           state.faceBox.xMin,
           state.faceBox.yMin,
@@ -54,17 +54,19 @@ export const useCanvasRenderer = (
           // Based on the official MediaPipe face mesh topology
           const lipIndices = [
             // Outer upper lip (left to right)
-            61, 146, 91, 181, 84, 17, 314, 405, 269, 270, 267,
+            // 61, 146, 91, 181, 84, 17, 314, 405, 269, 270, 267,
+            // 61,
             // Outer lower lip (left to right)  
-            61, 78, 95, 88, 178, 87, 14, 317, 402, 318, 324, 308, 375, 291,
+            // 61, 78, 95, 88, 178, 87, 14, 317, 402, 318, 324, 308, 375, 291,
             // Inner upper lip
+            // 78, 191, 80, 81, 82, 13, 312, 311, 310, 415, 308,
             78, 191, 80, 81, 82, 13, 312, 311, 310, 415, 308,
             // Inner lower lip
-            78, 95, 88, 178, 87, 14, 317, 402, 318, 324, 308,
+            95, 88, 178, 87, 14, 317, 402, 318, 324,
             // Corners
-            61, 291,
+            // 61, 291,
             // Centers
-            0, 13, 14, 17, 18, 269
+            // 0, 13, 14, 17, 18, 269
           ];
           
           // Get unique indices
@@ -75,7 +77,8 @@ export const useCanvasRenderer = (
             if (state.faceKeypoints && state.faceKeypoints[index]) {
               const keypoint = state.faceKeypoints[index];
               ctx.beginPath();
-              ctx.arc(keypoint.x, keypoint.y, 3, 0, 2 * Math.PI);
+              // arc(x, y, radius, startAngle, endAngle) - draws a full circle for each lip keypoint
+              ctx.arc(keypoint.x, keypoint.y, 1.25, 0, 2 * Math.PI);
               ctx.fill();
             }
           });

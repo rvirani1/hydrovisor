@@ -158,7 +158,8 @@ export function detectDrinking(
 
   // Check each detected object for overlap with lip area
   for (const objectBox of objectDetections) {
-    if (isLipObjectOverlap(faceKeypoints, objectBox, overlapThreshold)) {
+    const overlap = isLipObjectOverlap(faceKeypoints, objectBox, overlapThreshold);
+    if (overlap) {
       return { isDrinking: true, drinkingObject: objectBox };
     }
   }
@@ -166,37 +167,3 @@ export function detectDrinking(
   return { isDrinking: false, drinkingObject: null };
 }
 
-/**
- * Track consecutive frames of drinking detection
- */
-export class ConsecutiveFrameTracker {
-  private count: number = 0;
-  private readonly requiredFrames: number;
-
-  constructor(requiredFrames: number = 5) {
-    this.requiredFrames = requiredFrames;
-  }
-
-  /**
-   * Update the tracker with a new frame result
-   * @param detected Whether drinking was detected in this frame
-   * @returns Whether the required consecutive frames have been met
-   */
-  update(detected: boolean): boolean {
-    if (detected) {
-      this.count++;
-      return this.count >= this.requiredFrames;
-    } else {
-      this.count = 0;
-      return false;
-    }
-  }
-
-  reset(): void {
-    this.count = 0;
-  }
-
-  getCount(): number {
-    return this.count;
-  }
-}
