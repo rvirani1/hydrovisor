@@ -33,8 +33,8 @@ export const LoadingScreen: React.FC = () => {
     <motion.div
       className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-blue-900 via-blue-800 to-purple-900"
       initial={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.6, ease: "easeInOut" }}
     >
       <div className="text-center">
         {/* Animated Water Drop Logo */}

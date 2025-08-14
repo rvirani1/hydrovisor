@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { WebcamFeed } from '@/components/WebcamFeed';
 import { HydrationStats } from '@/components/HydrationStats';
 import { LoadingScreen } from '@/components/LoadingScreen';
@@ -18,21 +18,21 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2
+      staggerChildren: 0.15,
+      delayChildren: 0.8
     }
   }
 };
 
 const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
+  hidden: { y: 30, opacity: 0 },
   visible: {
     y: 0,
     opacity: 1,
     transition: {
       type: "spring" as const,
-      stiffness: 100,
-      damping: 15
+      stiffness: 80,
+      damping: 12
     }
   }
 };
@@ -66,26 +66,32 @@ function App() {
 
   return (
     <>
-      {/* Show loading screen as overlay while models initialize */}
-      {!isFullyInitialized && <LoadingScreen />}
+      {/* Show loading screen with fade-out animation */}
+      <AnimatePresence>
+        {!isFullyInitialized && <LoadingScreen />}
+      </AnimatePresence>
 
-      {/* Main UI - render but hide during initialization */}
+      {/* Main UI - fade in after initialization */}
       <motion.div 
-        className={`min-h-screen ${!isFullyInitialized ? 'opacity-0 pointer-events-none' : ''}`}
-        animate={isOverdue ? {
+        className="min-h-screen"
+        initial={{ opacity: 0 }}
+        animate={isFullyInitialized ? (isOverdue ? {
+          opacity: 1,
           background: [
             'linear-gradient(to bottom right, rgb(254 226 226), rgb(255 240 240), rgb(254 202 202))',
             'linear-gradient(to bottom right, rgb(252 165 165), rgb(254 202 202), rgb(248 113 113))',
             'linear-gradient(to bottom right, rgb(254 226 226), rgb(255 240 240), rgb(254 202 202))'
           ]
         } : {
+          opacity: 1,
           background: 'linear-gradient(to bottom right, rgb(239 246 255), rgb(255 255 255), rgb(236 254 255))'
-        }}
-        transition={isOverdue ? {
-          duration: 3,
-          repeat: Infinity,
-          ease: "easeInOut"
-        } : {}}
+        }) : { opacity: 0 }}
+        transition={isFullyInitialized ? (isOverdue ? {
+          opacity: { duration: 0.8, delay: 0.3 },
+          background: { duration: 3, repeat: Infinity, ease: "easeInOut" }
+        } : {
+          opacity: { duration: 0.8, delay: 0.3 }
+        }) : {}}
       >
       {/* Animated Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
@@ -97,7 +103,7 @@ function App() {
       <motion.div
         variants={containerVariants}
         initial="hidden"
-        animate="visible"
+        animate={isFullyInitialized ? "visible" : "hidden"}
         className="relative z-10"
       >
         {/* Header */}
@@ -132,7 +138,7 @@ function App() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setSettingsOpen(true)}
-                  className="flex items-center gap-3 px-5 py-3 rounded-lg bg-purple-50/80 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors cursor-pointer border border-purple-200 dark:border-purple-800"
+                  className="flex items-center gap-3 px-8 py-3 rounded-lg bg-purple-50/80 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors cursor-pointer border border-purple-200 dark:border-purple-800 min-w-[160px]"
                 >
                   <Clock className="h-6 w-6 text-purple-600 dark:text-purple-400" />
                   <div className="text-left">
