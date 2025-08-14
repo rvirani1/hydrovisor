@@ -58,11 +58,12 @@ export const LoadingScreen: React.FC = () => {
           >
             <defs>
               <linearGradient id="waterGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#94a3b8" />
-                <stop offset="100%" stopColor="#64748b" />
+                <stop offset="0%" stopColor="#60A5FA" />
+                <stop offset="50%" stopColor="#3B82F6" />
+                <stop offset="100%" stopColor="#2563EB" />
               </linearGradient>
               <filter id="glow">
-                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
                 <feMerge>
                   <feMergeNode in="coloredBlur"/>
                   <feMergeNode in="SourceGraphic"/>
@@ -191,7 +192,7 @@ export const LoadingScreen: React.FC = () => {
           >
             <path
               d="M0,64 C320,100 420,20 720,60 C1020,100 1120,20 1440,60 L1440,120 L0,120 Z"
-              fill="rgba(100, 116, 139, 0.15)"
+              fill="rgba(59, 130, 246, 0.15)"
             >
               <animate
                 attributeName="d"
