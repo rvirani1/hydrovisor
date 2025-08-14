@@ -13,6 +13,7 @@ interface HydrationStore {
   hydrationIntervalMinutes: number;
   firstHydrationTime: Date | null;  // First drink of the day (persisted)
   lastHydrationTime: Date | null;    // Last drink in current session (not persisted)
+  soundEnabled: boolean;              // Whether to play sound with notifications (persisted)
   webcamReady: boolean;
   faceDetectorReady: boolean;
   objectDetectorReady: boolean;
@@ -28,6 +29,7 @@ interface HydrationStore {
   
   addHydrationEvent: (object: DetectedObject) => void;
   setHydrationInterval: (minutes: number) => void;
+  setSoundEnabled: (enabled: boolean) => void;
   setWebcamReady: (ready: boolean) => void;
   setFaceDetectorReady: (ready: boolean) => void;
   setObjectDetectorReady: (ready: boolean) => void;
@@ -65,6 +67,7 @@ export const useHydrationStore = create<HydrationStore>()(
   hydrationIntervalMinutes: 3,
   firstHydrationTime: null,
   lastHydrationTime: null,
+  soundEnabled: true,  // Default to true
   webcamReady: false,
   faceDetectorReady: false,
   objectDetectorReady: false,
@@ -90,6 +93,8 @@ export const useHydrationStore = create<HydrationStore>()(
   },
   
   setHydrationInterval: (minutes) => set({ hydrationIntervalMinutes: minutes }),
+  
+  setSoundEnabled: (enabled) => set({ soundEnabled: enabled }),
   
   setWebcamReady: (ready) => set((state) => ({ 
     webcamReady: ready,
@@ -197,6 +202,7 @@ export const useHydrationStore = create<HydrationStore>()(
       name: 'hydrovisor-storage',
       partialize: (state) => ({ 
         hydrationIntervalMinutes: state.hydrationIntervalMinutes,
+        soundEnabled: state.soundEnabled,
         hydrationEvents: state.hydrationEvents,
         firstHydrationTime: state.firstHydrationTime,
         // Don't persist lastHydrationTime - it should reset on page load

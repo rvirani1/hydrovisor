@@ -11,7 +11,8 @@ import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useHydrationStore } from '@/store/hydrationStore';
-import { Settings, RotateCcw, Timer } from 'lucide-react';
+import { Settings, RotateCcw, Timer, Volume2 } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
 
 interface SettingsModalProps {
   open: boolean;
@@ -22,6 +23,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ open, onOpenChange
   const {
     hydrationIntervalMinutes,
     setHydrationInterval,
+    soundEnabled,
+    setSoundEnabled,
     reset,
   } = useHydrationStore();
 
@@ -95,6 +98,27 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ open, onOpenChange
                 </motion.div>
               ))}
             </div>
+          </div>
+
+          {/* Sound Settings */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <label 
+                htmlFor="sound-toggle" 
+                className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2 cursor-pointer"
+              >
+                <Volume2 className="h-4 w-4" />
+                Notification Sound
+              </label>
+              <Switch
+                id="sound-toggle"
+                checked={soundEnabled}
+                onCheckedChange={setSoundEnabled}
+              />
+            </div>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Play a sound when it's time to hydrate
+            </p>
           </div>
 
           {/* Reset Button */}

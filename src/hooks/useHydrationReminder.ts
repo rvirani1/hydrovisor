@@ -7,6 +7,7 @@ export const useHydrationReminder = () => {
     isOverdue, 
     hydrationIntervalMinutes,
     notificationPermission,
+    soundEnabled,
     lastHydrationTime,
     trackingStartTime
   } = useHydrationStore();
@@ -39,6 +40,7 @@ export const useHydrationReminder = () => {
         sendNotification({
           title: '💧 Time to Hydrate!',
           body: `It's been ${timeSinceLastDrink} minutes since your last drink. Stay hydrated!`,
+          playSound: soundEnabled,
         });
         
         lastNotificationTimeRef.current = now;
@@ -58,5 +60,5 @@ export const useHydrationReminder = () => {
     const interval = setInterval(checkAndNotify, 30000);
 
     return () => clearInterval(interval);
-  }, [isOverdue, hydrationIntervalMinutes, notificationPermission, lastHydrationTime, trackingStartTime]);
+  }, [isOverdue, hydrationIntervalMinutes, notificationPermission, soundEnabled, lastHydrationTime, trackingStartTime]);
 };
