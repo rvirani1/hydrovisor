@@ -31,7 +31,7 @@ export const LoadingScreen: React.FC = () => {
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-blue-900 via-blue-800 to-purple-900"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"
       initial={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.6, ease: "easeInOut" }}
@@ -58,8 +58,8 @@ export const LoadingScreen: React.FC = () => {
           >
             <defs>
               <linearGradient id="waterGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#60A5FA" />
-                <stop offset="100%" stopColor="#3B82F6" />
+                <stop offset="0%" stopColor="#94a3b8" />
+                <stop offset="100%" stopColor="#64748b" />
               </linearGradient>
               <filter id="glow">
                 <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
@@ -112,7 +112,7 @@ export const LoadingScreen: React.FC = () => {
         </motion.h1>
         
         <motion.p
-          className="text-blue-200 mb-8"
+          className="text-slate-400 mb-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
@@ -191,7 +191,7 @@ export const LoadingScreen: React.FC = () => {
           >
             <path
               d="M0,64 C320,100 420,20 720,60 C1020,100 1120,20 1440,60 L1440,120 L0,120 Z"
-              fill="rgba(59, 130, 246, 0.2)"
+              fill="rgba(100, 116, 139, 0.15)"
             >
               <animate
                 attributeName="d"

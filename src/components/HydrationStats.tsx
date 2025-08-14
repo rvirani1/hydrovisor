@@ -40,31 +40,31 @@ export const HydrationStats: React.FC = () => {
       className="space-y-6"
     >
       {/* Countdown Timer - Not in a card */}
-      <div className="text-center space-y-4 p-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20">
+      <div className="text-center space-y-4 p-6 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10">
         <div className="flex items-center justify-center gap-2">
           <Badge 
             className={objectDetected 
-              ? "bg-green-500/30 border-green-400/50 text-green-200 backdrop-blur-sm" 
-              : "bg-white/20 border-white/30 text-white/80 backdrop-blur-sm"}
+              ? "bg-green-500/20 border-green-400/30 text-green-300 backdrop-blur-sm" 
+              : "bg-white/10 border-white/20 text-slate-400 backdrop-blur-sm"}
           >
             <Coffee className="h-3 w-3 mr-1" />
             {objectDetected ? "Cup Detected" : "No Cup"}
           </Badge>
           {isDrinking && (
-            <Badge className="bg-orange-500/30 border-orange-400/50 text-orange-200 animate-pulse backdrop-blur-sm">
+            <Badge className="bg-orange-500/20 border-orange-400/30 text-orange-300 animate-pulse backdrop-blur-sm">
               Drinking
             </Badge>
           )}
         </div>
         
         <div>
-          <div className="text-sm font-medium text-blue-200 mb-2">
+          <div className="text-sm font-medium text-slate-400 mb-2">
             {overdue ? "Overdue! Time to hydrate" : "Next drink in"}
           </div>
           <div className={`text-6xl font-bold tabular-nums ${
             overdue 
-              ? "text-red-400 animate-pulse drop-shadow-[0_0_30px_rgba(248,113,113,0.5)]" 
-              : "text-white drop-shadow-[0_0_20px_rgba(96,165,250,0.3)]"
+              ? "text-red-400 animate-pulse" 
+              : "text-white"
           }`}>
             {overdue ? (
               <span>Drink Now!</span>
@@ -81,14 +81,14 @@ export const HydrationStats: React.FC = () => {
       </div>
 
       {/* Today's Drinks Card */}
-      <Card className="backdrop-blur-md bg-white/10 border border-white/20">
+      <Card className="backdrop-blur-md bg-white/5 border border-white/10">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Droplets className="h-5 w-5 text-blue-400" />
+              <Droplets className="h-5 w-5 text-slate-400" />
               <CardTitle className="text-white">Today's Hydration</CardTitle>
             </div>
-            <div className="text-2xl font-bold text-blue-400">
+            <div className="text-2xl font-bold text-slate-300">
               {todayCount}
             </div>
           </div>
@@ -109,7 +109,7 @@ export const HydrationStats: React.FC = () => {
                     className=""
                   >
                     <Badge 
-                      className="text-xs font-light px-3 py-1.5 bg-blue-500/20 border border-blue-400/30 text-blue-200 backdrop-blur-sm"
+                      className="text-xs font-light px-3 py-1.5 bg-slate-500/20 border border-slate-400/20 text-slate-400 backdrop-blur-sm"
                     >
                       {new Date(event.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </Badge>
@@ -118,7 +118,7 @@ export const HydrationStats: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="text-center py-8 text-blue-200/60">
+            <div className="text-center py-8 text-slate-500">
               <Coffee className="h-8 w-8 mx-auto mb-2 opacity-50" />
               <p className="text-sm">Start drinking to track your hydration</p>
             </div>
