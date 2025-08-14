@@ -83,7 +83,7 @@ export const WebcamFeed: React.FC<WebcamFeedProps> = ({ onVideoRef, canvasRef })
   return (
     <div className="relative w-full">
       <motion.div 
-        className="relative rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-900 aspect-[4/3] md:aspect-video"
+        className="relative rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-900 aspect-[4/3]"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
