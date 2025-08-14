@@ -99,7 +99,10 @@ function App() {
                   transition={{ duration: 0.5 }}
                 />
                 <div>
-                  <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                  <h1 
+                    className="text-3xl md:text-4xl bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent"
+                    style={{ fontFamily: 'Righteous, cursive' }}
+                  >
                     Hydrovisor
                   </h1>
                   <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
