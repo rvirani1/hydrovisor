@@ -10,7 +10,7 @@ import { useDrinkingDetection } from '@/hooks/useDrinkingDetection';
 import { useCanvasRenderer } from '@/hooks/useCanvasRenderer';
 import { useHydrationReminder } from '@/hooks/useHydrationReminder';
 import { useHydrationStore } from '@/store/hydrationStore';
-import { Settings } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import logo from '@/assets/logo.png';
 
 const containerVariants = {
@@ -45,6 +45,7 @@ function App() {
   const webcamReady = useHydrationStore((state) => state.webcamReady);
   const faceDetectorReady = useHydrationStore((state) => state.faceDetectorReady);
   const objectDetectorReady = useHydrationStore((state) => state.objectDetectorReady);
+  const hydrationIntervalMinutes = useHydrationStore((state) => state.hydrationIntervalMinutes);
 
   // Debug logging
   useEffect(() => {
@@ -108,12 +109,18 @@ function App() {
               </div>
               <div className="flex items-center gap-2">
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => setSettingsOpen(true)}
-                  className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors cursor-pointer"
+                  className="flex items-center gap-3 px-5 py-3 rounded-lg bg-purple-50/80 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors cursor-pointer border border-purple-200 dark:border-purple-800"
                 >
-                  <Settings className="h-5 w-5" />
+                  <Clock className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                  <div className="text-left">
+                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Interval</div>
+                    <div className="text-lg font-bold text-gray-900 dark:text-gray-100">
+                      {hydrationIntervalMinutes} min
+                    </div>
+                  </div>
                 </motion.button>
               </div>
             </div>

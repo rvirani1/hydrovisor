@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useHydrationStore } from '@/store/hydrationStore';
-import { Droplets, TrendingUp, Clock, AlertTriangle, CheckCircle2, Coffee } from 'lucide-react';
+import { Droplets, TrendingUp, AlertTriangle, CheckCircle2, Coffee } from 'lucide-react';
 
 export const HydrationStats: React.FC = () => {
   const {
@@ -87,24 +87,15 @@ export const HydrationStats: React.FC = () => {
             )}
           </div>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="p-4 rounded-lg bg-blue-50/50 dark:bg-blue-900/10">
-              <div className="flex items-center gap-2 mb-1">
-                <TrendingUp className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Today's Count</span>
-              </div>
-              <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{todayCount}</div>
-              <div className="text-xs text-gray-500 dark:text-gray-500">drinks</div>
+          {/* Today's Count */}
+          <div className="p-4 rounded-lg bg-blue-50/50 dark:bg-blue-900/10">
+            <div className="flex items-center gap-2 mb-2">
+              <TrendingUp className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Today's Hydration</span>
             </div>
-
-            <div className="p-4 rounded-lg bg-purple-50/50 dark:bg-purple-900/10">
-              <div className="flex items-center gap-2 mb-1">
-                <Clock className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Target Interval</span>
-              </div>
-              <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">{hydrationIntervalMinutes}</div>
-              <div className="text-xs text-gray-500 dark:text-gray-500">minutes</div>
+            <div className="flex items-baseline gap-2">
+              <div className="text-3xl font-bold text-gray-900 dark:text-gray-100">{todayCount}</div>
+              <div className="text-sm text-gray-500 dark:text-gray-500">drinks today</div>
             </div>
           </div>
 
