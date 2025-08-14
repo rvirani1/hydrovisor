@@ -20,8 +20,7 @@ export const ROBOFLOW_CONFIG = {
 export const AVAILABLE_MODELS = [
   {
     name: 'YOLO v8',
-    // Once trained versionNumber: 10,
-    versionNumber: 2,
+    versionNumber: 10,
     description: 'Fast and accurate general-purpose detection'
   },
   {
