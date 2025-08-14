@@ -40,30 +40,31 @@ export const HydrationStats: React.FC = () => {
       className="space-y-6"
     >
       {/* Countdown Timer - Not in a card */}
-      <div className="text-center space-y-4">
+      <div className="text-center space-y-4 p-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20">
         <div className="flex items-center justify-center gap-2">
           <Badge 
-            variant={objectDetected ? "default" : "secondary"}
-            className={objectDetected ? "bg-green-500 hover:bg-green-600" : ""}
+            className={objectDetected 
+              ? "bg-green-500/30 border-green-400/50 text-green-200 backdrop-blur-sm" 
+              : "bg-white/20 border-white/30 text-white/80 backdrop-blur-sm"}
           >
             <Coffee className="h-3 w-3 mr-1" />
             {objectDetected ? "Cup Detected" : "No Cup"}
           </Badge>
           {isDrinking && (
-            <Badge className="bg-orange-500 hover:bg-orange-600 animate-pulse">
+            <Badge className="bg-orange-500/30 border-orange-400/50 text-orange-200 animate-pulse backdrop-blur-sm">
               Drinking
             </Badge>
           )}
         </div>
         
         <div>
-          <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
+          <div className="text-sm font-medium text-blue-200 mb-2">
             {overdue ? "Overdue! Time to hydrate" : "Next drink in"}
           </div>
           <div className={`text-6xl font-bold tabular-nums ${
             overdue 
-              ? "text-red-600 dark:text-red-400 animate-pulse" 
-              : "text-gray-900 dark:text-gray-100"
+              ? "text-red-400 animate-pulse drop-shadow-[0_0_30px_rgba(248,113,113,0.5)]" 
+              : "text-white drop-shadow-[0_0_20px_rgba(96,165,250,0.3)]"
           }`}>
             {overdue ? (
               <span>Drink Now!</span>
@@ -80,14 +81,14 @@ export const HydrationStats: React.FC = () => {
       </div>
 
       {/* Today's Drinks Card */}
-      <Card className="backdrop-blur-sm bg-white/50 dark:bg-gray-900/50 border-0">
+      <Card className="backdrop-blur-md bg-white/10 border border-white/20">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Droplets className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-              <CardTitle>Today's Hydration</CardTitle>
+              <Droplets className="h-5 w-5 text-blue-400" />
+              <CardTitle className="text-white">Today's Hydration</CardTitle>
             </div>
-            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+            <div className="text-2xl font-bold text-blue-400">
               {todayCount}
             </div>
           </div>
@@ -108,8 +109,7 @@ export const HydrationStats: React.FC = () => {
                     className=""
                   >
                     <Badge 
-                      variant="secondary" 
-                      className="text-xs font-light px-3 py-1.5 bg-opacity-50 border border-gray-200"
+                      className="text-xs font-light px-3 py-1.5 bg-blue-500/20 border border-blue-400/30 text-blue-200 backdrop-blur-sm"
                     >
                       {new Date(event.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </Badge>
@@ -118,7 +118,7 @@ export const HydrationStats: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+            <div className="text-center py-8 text-blue-200/60">
               <Coffee className="h-8 w-8 mx-auto mb-2 opacity-50" />
               <p className="text-sm">Start drinking to track your hydration</p>
             </div>

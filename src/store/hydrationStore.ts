@@ -11,7 +11,8 @@ interface HydrationStore {
   hydrationEvents: HydrationEvent[];
   trackingStartTime: Date | null;
   hydrationIntervalMinutes: number;
-  lastHydrationTime: Date | null;
+  firstHydrationTime: Date | null;  // First drink of the day (persisted)
+  lastHydrationTime: Date | null;    // Last drink in current session (not persisted)
   webcamReady: boolean;
   faceDetectorReady: boolean;
   objectDetectorReady: boolean;
@@ -55,16 +56,6 @@ const isToday = (date: Date | string | null): boolean => {
   );
 };
 
-// Helper to filter out events from previous days
-const filterTodayEvents = (events: HydrationEvent[]): HydrationEvent[] => {
-  if (!events) return [];
-  return events.filter(event => {
-    const eventDate = typeof event.timestamp === 'string' 
-      ? new Date(event.timestamp)
-      : event.timestamp;
-    return isToday(eventDate);
-  });
-};
 
 export const useHydrationStore = create<HydrationStore>()(
   persist(
@@ -72,6 +63,7 @@ export const useHydrationStore = create<HydrationStore>()(
   hydrationEvents: [],
   trackingStartTime: new Date(),
   hydrationIntervalMinutes: 3,
+  firstHydrationTime: null,
   lastHydrationTime: null,
   webcamReady: false,
   faceDetectorReady: false,
@@ -92,6 +84,8 @@ export const useHydrationStore = create<HydrationStore>()(
     set((state) => ({
       hydrationEvents: [...state.hydrationEvents, { timestamp: now, detectedObject: object }],
       lastHydrationTime: now,
+      // Set firstHydrationTime if this is the first drink of the day
+      firstHydrationTime: state.firstHydrationTime || now,
     }));
   },
   
@@ -186,6 +180,7 @@ export const useHydrationStore = create<HydrationStore>()(
   reset: () => set((state) => ({
     ...state,
     hydrationEvents: [],
+    firstHydrationTime: null,
     lastHydrationTime: null,
     faceDetected: false,
     faceBox: null,
@@ -203,34 +198,36 @@ export const useHydrationStore = create<HydrationStore>()(
       partialize: (state) => ({ 
         hydrationIntervalMinutes: state.hydrationIntervalMinutes,
         hydrationEvents: state.hydrationEvents,
-        lastHydrationTime: state.lastHydrationTime,
+        firstHydrationTime: state.firstHydrationTime,
+        // Don't persist lastHydrationTime - it should reset on page load
       }),
       onRehydrateStorage: () => (state) => {
         if (state) {
           // Convert string dates back to Date objects
-          if (state.lastHydrationTime && typeof state.lastHydrationTime === 'string') {
-            state.lastHydrationTime = new Date(state.lastHydrationTime);
+          if (state.firstHydrationTime && typeof state.firstHydrationTime === 'string') {
+            state.firstHydrationTime = new Date(state.firstHydrationTime);
           }
-          if (state.hydrationEvents) {
+          
+          // Check if firstHydrationTime is from today
+          if (state.firstHydrationTime && !isToday(state.firstHydrationTime)) {
+            console.log('First hydration time is from a previous day, resetting data');
+            state.hydrationEvents = [];
+            state.firstHydrationTime = null;
+          } else if (state.hydrationEvents) {
+            // Convert timestamps in events
             state.hydrationEvents = state.hydrationEvents.map((event: HydrationEvent) => ({
               ...event,
               timestamp: typeof event.timestamp === 'string' ? new Date(event.timestamp) : event.timestamp
             }));
-            
-            // Filter to only keep today's events
-            state.hydrationEvents = filterTodayEvents(state.hydrationEvents);
-            
-            // Update lastHydrationTime based on filtered events
-            if (state.hydrationEvents.length > 0) {
-              const lastEvent = state.hydrationEvents[state.hydrationEvents.length - 1];
-              state.lastHydrationTime = lastEvent.timestamp;
-            } else {
-              state.lastHydrationTime = null;
-            }
           }
           
           // Always set tracking start time to now (not persisted)
           state.trackingStartTime = new Date();
+          
+          // lastHydrationTime should be null on page load unless we found it from events
+          if (!state.hydrationEvents || state.hydrationEvents.length === 0) {
+            state.lastHydrationTime = null;
+          }
         }
       },
     }

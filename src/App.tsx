@@ -78,13 +78,13 @@ function App() {
         animate={isFullyInitialized ? (isOverdue ? {
           opacity: 1,
           background: [
-            'linear-gradient(to bottom right, rgb(254 226 226), rgb(255 240 240), rgb(254 202 202))',
-            'linear-gradient(to bottom right, rgb(252 165 165), rgb(254 202 202), rgb(248 113 113))',
-            'linear-gradient(to bottom right, rgb(254 226 226), rgb(255 240 240), rgb(254 202 202))'
+            'linear-gradient(to bottom right, rgb(147 51 234), rgb(79 70 229), rgb(239 68 68))',
+            'linear-gradient(to bottom right, rgb(168 85 247), rgb(99 102 241), rgb(248 113 113))',
+            'linear-gradient(to bottom right, rgb(147 51 234), rgb(79 70 229), rgb(239 68 68))'
           ]
         } : {
           opacity: 1,
-          background: 'linear-gradient(to bottom right, rgb(239 246 255), rgb(255 255 255), rgb(236 254 255))'
+          background: 'linear-gradient(to bottom right, rgb(30 58 138), rgb(29 78 216), rgb(147 51 234))'
         }) : { opacity: 0 }}
         transition={isFullyInitialized ? (isOverdue ? {
           opacity: { duration: 0.8, delay: 0.3 },
@@ -95,9 +95,9 @@ function App() {
       >
       {/* Animated Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-blue-400 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-blob"></div>
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-400 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-400 rounded-full mix-blend-screen filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
       </div>
 
       <motion.div
@@ -109,7 +109,7 @@ function App() {
         {/* Header */}
         <motion.header 
           variants={itemVariants}
-          className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm"
+          className=""
         >
           <div className="container mx-auto px-4 py-4 md:py-6">
             <div className="flex items-center justify-between">
@@ -123,12 +123,12 @@ function App() {
                 />
                 <div>
                   <h1 
-                    className="text-3xl md:text-4xl bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent"
-                    style={{ fontFamily: 'Righteous, cursive' }}
+                    className="text-3xl md:text-4xl text-white"
+                    style={{ fontFamily: 'Righteous, cursive', textShadow: '0 2px 20px rgba(59, 130, 246, 0.5)' }}
                   >
                     Hydrovisor
                   </h1>
-                  <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-xs md:text-sm text-blue-200">
                     Your AI hydration companion
                   </p>
                 </div>
@@ -138,12 +138,12 @@ function App() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setSettingsOpen(true)}
-                  className="flex items-center gap-3 px-8 py-3 rounded-lg bg-purple-50/80 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors cursor-pointer border border-purple-200 dark:border-purple-800 min-w-[160px]"
+                  className="flex items-center gap-3 px-8 py-3 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all cursor-pointer border border-white/30 min-w-[160px]"
                 >
-                  <Clock className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                  <Clock className="h-6 w-6 text-white" />
                   <div className="text-left">
-                    <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Interval</div>
-                    <div className="text-lg font-bold text-gray-900 dark:text-gray-100">
+                    <div className="text-sm font-medium text-blue-200">Interval</div>
+                    <div className="text-lg font-bold text-white">
                       {hydrationIntervalMinutes} min
                     </div>
                   </div>
