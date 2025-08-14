@@ -48,6 +48,7 @@ function App() {
   const objectDetectorReady = useHydrationStore((state) => state.objectDetectorReady);
   const hydrationIntervalMinutes = useHydrationStore((state) => state.hydrationIntervalMinutes);
   const isOverdue = useHydrationStore((state) => state.isOverdue());
+  const isDrinking = useHydrationStore((state) => state.isDrinking);
 
   // Debug logging
   useEffect(() => {
@@ -76,7 +77,16 @@ function App() {
       <motion.div 
         className="min-h-screen"
         initial={{ opacity: 0 }}
-        animate={isFullyInitialized ? (isOverdue ? {
+        animate={isFullyInitialized ? (isDrinking ? {
+          opacity: 1,
+          background: [
+            'linear-gradient(to bottom right, rgb(234 88 12), rgb(249 115 22), rgb(254 215 170))',
+            'linear-gradient(to bottom right, rgb(255 237 213), rgb(254 215 170), rgb(251 146 60))',
+            'linear-gradient(to bottom right, rgb(249 115 22), rgb(234 88 12), rgb(194 65 12))',
+            'linear-gradient(to bottom right, rgb(255 237 213), rgb(254 215 170), rgb(251 146 60))',
+            'linear-gradient(to bottom right, rgb(234 88 12), rgb(249 115 22), rgb(254 215 170))'
+          ]
+        } : isOverdue ? {
           opacity: 1,
           background: [
             'linear-gradient(to bottom right, rgb(30 41 59), rgb(51 65 85), rgb(127 29 29))',
@@ -87,7 +97,10 @@ function App() {
           opacity: 1,
           background: 'linear-gradient(to bottom right, rgb(15 23 42), rgb(30 41 59), rgb(51 65 85))'
         }) : { opacity: 0 }}
-        transition={isFullyInitialized ? (isOverdue ? {
+        transition={isFullyInitialized ? (isDrinking ? {
+          opacity: { duration: 0.8, delay: 0.3 },
+          background: { duration: 1, repeat: Infinity, ease: "easeInOut" }
+        } : isOverdue ? {
           opacity: { duration: 0.8, delay: 0.3 },
           background: { duration: 3, repeat: Infinity, ease: "easeInOut" }
         } : {
@@ -130,13 +143,13 @@ function App() {
                     Hydrovisor
                   </h1>
                   <div className="flex items-center gap-1.5 mt-1">
-                    <p className="text-xs md:text-sm text-slate-400">
+                    <p className="text-xs md:text-sm text-slate-400 mt-1">
                       Powered by
                     </p>
                     <img 
                       src={roboflowLogo} 
                       alt="Roboflow" 
-                      className="h-3.5 md:h-4 w-auto"
+                      className="h-3.5 w-auto"
                     />
                   </div>
                 </div>

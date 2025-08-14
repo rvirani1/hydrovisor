@@ -4,7 +4,7 @@ import { detectDrinking } from '../utils/overlapDetection';
 
 const OVERLAP_THRESHOLD = 0.02; // 2% IoU threshold for drinking detection
 const DEBOUNCE_MS = 500; // Wait 500ms after last detection before stopping
-const MIN_DRINKING_FRAMES = 3; // Minimum frames to start drinking
+const MIN_DRINKING_FRAMES = 2; // Minimum frames to start drinking
 
 export const useDrinkingDetection = () => {
   const {
