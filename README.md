@@ -1,154 +1,195 @@
-# 💧 Hydrovisor
+# Hydrovisor 💧
 
-**Your personal hydration tracking assistant powered by computer vision**
-
-Hydrovisor is an intelligent web application that automatically tracks your hydration habits using your webcam and AI-powered object detection. It detects when you're drinking from cups, glasses, or bottles and maintains a log of your hydration events throughout the day.
-
-![Roboflow Logo](https://roboflow.com/logo.svg)
-
-*An open-source project by [Roboflow](https://roboflow.com)*
+Smart hydration tracking using AI-powered computer vision to detect when you're drinking and remind you to stay hydrated throughout the day.
 
 ## Features
 
-- 🎥 **Real-time webcam monitoring** - Uses your camera to detect drinking activities
-- 🤖 **AI-powered detection** - Combines face detection and object recognition to identify when you're drinking
-- 📊 **Hydration tracking** - Automatically logs drinking events with timestamps
-- ⚙️ **Customizable intervals** - Set personalized hydration reminder intervals
-- 📈 **Daily statistics** - View your hydration progress and patterns
-- 🎯 **Multiple container types** - Detects cups, glasses, and bottles
-- ✨ **Beautiful UI** - Clean, modern interface with real-time feedback
+- **Real-time Face Detection**: Uses TensorFlow.js and MediaPipe FaceMesh for accurate face tracking
+- **Object Detection**: Powered by Roboflow to detect cups, bottles, and glasses
+- **Smart Drinking Detection**: Combines face landmarks and object detection to identify when you're drinking
+- **Hydration Reminders**: Customizable interval notifications to keep you hydrated
+- **Session Tracking**: Persistent storage of your daily hydration events
+- **Modern UI**: Beautiful, responsive interface with Tailwind CSS and Framer Motion
 
-## How It Works
+## Tech Stack
 
-Hydrovisor uses a combination of computer vision techniques:
+- **Frontend**: React 18 + TypeScript + Vite
+- **Styling**: Tailwind CSS + Framer Motion animations
+- **State Management**: Zustand with persistence
+- **AI/ML**: TensorFlow.js + MediaPipe + Roboflow
+- **Testing**: Jest + React Testing Library
+- **Build**: Vite
+- **CI/CD**: GitHub Actions
 
-1. **Face Detection** - Uses TensorFlow.js and MediaPipe to detect when your face is visible
-2. **Object Detection** - Integrates with Roboflow's inference API to detect drinking containers (cups, glasses, bottles)
-3. **Drinking Detection** - Combines face and object detection to determine when you're actively drinking
-4. **Event Logging** - Records hydration events when drinking is detected for more than 2 seconds
+## Getting Started
 
-## Prerequisites
+### Prerequisites
 
-- Modern web browser with webcam access
-- Node.js 18+ and npm
-- Roboflow API key and model ID (for object detection)
+- Node.js 18+ 
+- npm or yarn
+- A modern web browser with webcam support
 
-## Installation
+### Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/roboflow/hydrovisor.git
-   cd hydrovisor
-   ```
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd hydrovisor
+```
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+2. Install dependencies:
+```bash
+npm install
+```
 
-3. **Start the development server**
-   ```bash
-   npm run dev
-   ```
+3. Start the development server:
+```bash
+npm run dev
+```
 
-4. **Open your browser**
-   Navigate to `http://localhost:5173`
+4. Open your browser and navigate to `http://localhost:5173`
 
-## Configuration
+## Testing
 
-### Setting up Object Detection
+This project includes a comprehensive test suite covering utilities, components, hooks, and store logic.
 
-1. **Get a Roboflow API key**:
-   - Sign up at [roboflow.com](https://roboflow.com)
-   - Create a new project or use an existing one
-   - Get your API key from the project settings
+### Running Tests
 
-2. **Configure the model**:
-   - In the app, enter your Roboflow API key
-   - Enter your model ID (should detect cups, glasses, and bottles)
-   - Click "Start Tracking" to begin monitoring
+```bash
+# Run all tests
+npm test
 
-### Customization
+# Run tests in watch mode
+npm run test:watch
 
-- **Hydration Interval**: Set how often you want to be reminded to drink (default: 30 minutes)
-- **Detection Sensitivity**: The app requires drinking to be detected for at least 2 seconds before logging an event
+# Run tests with coverage report
+npm run test:coverage
 
-## Usage
+# Run tests for CI (no watch, with coverage)
+npm run test:ci
+```
 
-1. **Grant camera permissions** when prompted by your browser
-2. **Configure your Roboflow settings** in the sidebar
-3. **Click "Start Tracking"** to begin monitoring
-4. **Position yourself** so your face is visible in the camera feed
-5. **Drink naturally** - the app will automatically detect and log your hydration events
-6. **Monitor your progress** in the statistics panel
+### Test Coverage
 
-## Development
+The test suite includes:
 
-### Available Scripts
+- **Utility Functions**: Notification handling, overlap detection algorithms
+- **Zustand Store**: State management, hydration tracking, persistence
+- **React Components**: UI components with proper mocking
+- **Custom Hooks**: Detection logic, timing functions
+- **Integration**: End-to-end workflows
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run lint` - Run ESLint
-- `npm run preview` - Preview production build
+Current coverage targets:
+- **Statements**: 70%
+- **Branches**: 70% 
+- **Functions**: 70%
+- **Lines**: 70%
 
-### Tech Stack
-
-- **Frontend**: React 19 with TypeScript
-- **Styling**: TailwindCSS
-- **State Management**: Zustand
-- **Computer Vision**: TensorFlow.js, MediaPipe
-- **Object Detection**: Roboflow Inference API
-- **Build Tool**: Vite
-
-### Project Structure
+### Test Structure
 
 ```
 src/
-├── components/
-│   ├── WebcamFeed.tsx      # Camera feed and detection overlay
-│   ├── HydrationStats.tsx   # Statistics and progress display
-│   └── HydrationConfig.tsx  # Settings and configuration
-├── hooks/
-│   ├── useFaceDetection.ts     # TensorFlow.js face detection
-│   ├── useObjectDetection.ts   # Roboflow object detection
-│   └── useDrinkingDetection.ts # Combined drinking logic
-└── store/
-    └── hydrationStore.ts       # Zustand state management
+├── utils/__tests__/           # Utility function tests
+├── store/__tests__/           # Zustand store tests  
+├── components/__tests__/      # React component tests
+├── hooks/__tests__/           # Custom hook tests
+└── setupTests.ts              # Jest configuration
 ```
 
-## Contributing
+## Project Structure
 
-We welcome contributions! This is an open-source project by Roboflow aimed at demonstrating practical computer vision applications.
+```
+src/
+├── components/          # React components
+│   ├── ui/             # Reusable UI components
+│   ├── HydrationStats.tsx
+│   ├── WebcamFeed.tsx
+│   └── ...
+├── hooks/              # Custom React hooks
+│   ├── useFaceDetection.ts
+│   ├── useObjectDetection.ts
+│   └── ...
+├── store/              # Zustand store
+│   └── hydrationStore.ts
+├── utils/              # Utility functions
+│   ├── notifications.ts
+│   └── overlapDetection.ts
+└── types/              # TypeScript definitions
+```
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+## Configuration
+
+### Hydration Settings
+- **Interval**: 1-120 minutes between reminders
+- **Detection Sensitivity**: Adjustable overlap thresholds
+- **Notification Preferences**: Browser notifications support
+
+### AI Models
+- **Face Detection**: MediaPipe FaceMesh for landmark detection
+- **Object Detection**: Roboflow inference for cup/bottle recognition
+- **Overlap Algorithm**: IoU calculation for drinking detection
+
+## Development
+
+### Code Style
+- **TypeScript**: Strict mode with explicit types
+- **ESLint**: Code quality and consistency
+- **Prettier**: Code formatting
+- **Tailwind**: Utility-first CSS
+
+### Git Workflow
+- **main**: Production-ready code
+- **develop**: Integration branch
+- **feature/***: Feature development
+
+### CI/CD Pipeline
+
+GitHub Actions workflow automatically:
+1. **Linting**: ESLint code quality checks
+2. **Testing**: Jest test suite with coverage
+3. **Building**: Vite production build
+4. **Coverage**: Reports uploaded to Codecov
+
+## Browser Support
+
+- Chrome 88+
+- Firefox 85+
+- Safari 14+
+- Edge 88+
+
+**Required Permissions:**
+- Camera access for face detection
+- Notification permissions for reminders
 
 ## Privacy
 
-- All processing happens locally in your browser
-- No video data is stored or transmitted (except for object detection API calls)
-- Hydration events are stored locally in your browser
-- You can clear your data at any time using the reset functionality
+- **No Data Collection**: All processing happens locally
+- **No Cloud Storage**: Data stays on your device
+- **Camera Privacy**: Video never leaves your browser
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Run tests: `npm test`
+4. Commit changes: `git commit -m 'Add amazing feature'`
+5. Push to branch: `git push origin feature/amazing-feature`
+6. Open a Pull Request
+
+### Before Submitting
+
+- [ ] Tests pass: `npm test`
+- [ ] Linting passes: `npm run lint`
+- [ ] Build succeeds: `npm run build`
+- [ ] Coverage maintained: `npm run test:coverage`
 
 ## License
 
-This project is open source and available under the [MIT License](LICENSE).
-
-## Support
-
-- 📖 [Roboflow Documentation](https://docs.roboflow.com)
-- 💬 [Roboflow Community](https://discuss.roboflow.com)
-- 🐛 [Report Issues](https://github.com/roboflow/hydrovisor/issues)
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Acknowledgments
 
-- Built with [Roboflow](https://roboflow.com) for object detection
-- Uses [TensorFlow.js](https://www.tensorflow.org/js) for face detection
-- Powered by [MediaPipe](https://mediapipe.dev) for face mesh detection
-
----
-
-*Stay hydrated! 💧*
+- **MediaPipe**: Face detection technology
+- **Roboflow**: Object detection platform
+- **TensorFlow.js**: Machine learning in the browser
+- **Tailwind CSS**: Utility-first CSS framework
