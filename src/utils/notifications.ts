@@ -37,7 +37,6 @@ export const sendNotification = (options: NotificationOptions): void => {
     body: options.body,
     icon: options.icon || '/logo.png',
     badge: '/logo.png',
-    vibrate: [200, 100, 200],
     tag: 'hydration-reminder',
     requireInteraction: false,
   });

@@ -43,6 +43,32 @@ interface HydrationStore {
   reset: () => void;
 }
 
+// Helper function to check if a date is today
+const isToday = (date: Date | string | null): boolean => {
+  if (!date) return false;
+  const checkDate = typeof date === 'string' ? new Date(date) : date;
+  const today = new Date();
+  return (
+    checkDate.getDate() === today.getDate() &&
+    checkDate.getMonth() === today.getMonth() &&
+    checkDate.getFullYear() === today.getFullYear()
+  );
+};
+
+// Helper to reset data if from previous day
+const resetIfNewDay = (state: any) => {
+  if (state.trackingStartTime && !isToday(state.trackingStartTime)) {
+    console.log('New day detected, resetting hydration data');
+    return {
+      ...state,
+      hydrationEvents: [],
+      trackingStartTime: new Date(),
+      lastHydrationTime: null,
+    };
+  }
+  return state;
+};
+
 export const useHydrationStore = create<HydrationStore>()(
   persist(
     (set, get) => ({
@@ -171,8 +197,21 @@ export const useHydrationStore = create<HydrationStore>()(
     {
       name: 'hydrovisor-storage',
       partialize: (state) => ({ 
-        hydrationIntervalMinutes: state.hydrationIntervalMinutes 
+        hydrationIntervalMinutes: state.hydrationIntervalMinutes,
+        hydrationEvents: state.hydrationEvents,
+        trackingStartTime: state.trackingStartTime,
+        lastHydrationTime: state.lastHydrationTime,
       }),
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          // Reset data if it's from a previous day
+          const updatedState = resetIfNewDay(state);
+          if (updatedState !== state) {
+            // Apply the reset
+            Object.assign(state, updatedState);
+          }
+        }
+      },
     }
   )
 );
