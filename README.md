@@ -1,127 +1,64 @@
-# 💧 Hydrovisor
-
-Your AI-powered hydration companion that uses your webcam to detect real drinking moments — no manual logging required.
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Froboflow%2Fhydrovisor&project-name=hydrovisor&repository-name=hydrovisor&env=VITE_ROBOFLOW_PUBLISHABLE_KEY,VITE_ROBOFLOW_MODEL_NAME,VITE_DETECTION_CLASSES)
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Froboflow%2Fhydrovisor&env=VITE_ROBOFLOW_PUBLISHABLE_KEY,VITE_ROBOFLOW_MODEL_NAME,VITE_DETECTION_CLASSES)
-
----
-
-### Why Hydrovisor?
-- 🎥 **Real-time monitoring**: Detects when you’re actually drinking via your webcam
-- 🤖 **AI vision**: Face detection + object recognition (cup, glass, bottle)
-- 📊 **Hands-free tracking**: Automatically logs timestamps for hydration events
-- ⏱️ **Smart reminders**: Customizable interval alerts to stay on track
-- ✨ **Polished UI**: Clean, responsive interface with real-time overlays
+<div align="center">
+  <img src="src/assets/logo.png" alt="Hydrovisor Logo" width="120" height="120">
+  
+  # Hydrovisor
+  
+  [![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+  [![Open Source](https://img.shields.io/badge/Open%20Source-%E2%9D%A4-green)](https://github.com/roboflow/hydrovisor)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
+  [![React](https://img.shields.io/badge/React-18-61dafb)](https://reactjs.org/)
+  [![Powered by Roboflow](https://img.shields.io/badge/Powered%20by-Roboflow-7c3aed)](https://roboflow.com)
+  
+  **Your AI-powered hydration companion that uses your webcam to detect real drinking moments — no manual logging required.**
+</div>
 
 ---
 
-## How It Works
-1. **Face Detection**: TensorFlow.js + MediaPipe FaceMesh to detect your primary face and keypoints
-2. **Object Detection**: Roboflow InferenceJS to detect drink containers (`cup`, `glass`, `bottle` by default)
-   - Choose from three detection models: YOLO v8, RF-DETR Small, or RF-DETR Nano
-3. **Drinking Detection**: Combines both signals; logs an event only if drinking is sustained for ≥ 2 frames (with 200ms stop debounce)
-4. **Local Logging**: Events are stored locally in the browser using Zustand + persist
+## ✨ Features
 
-## Demo (Local)
+- 🎥 **Real-time Detection** - Automatically detects when you're drinking using webcam
+- 🤖 **AI-Powered** - Face detection + object recognition (cups, bottles, glasses)
+- 📊 **Smart Tracking** - Logs hydration events automatically
+- ⏰ **Reminders** - Customizable intervals with sound notifications
+- 🎨 **Visual Feedback** - Background pulses orange when drinking detected
+
+## 🚀 Quick Start
+
 ```bash
 npm install
 npm run dev
-# open http://localhost:5173
-```
-Grant camera permission and start tracking from the UI.
-
-## One‑Click Deploy
-- Vercel: configure the environment variables when prompted
-- Render (Static Site): build command `npm run build`, publish directory `dist`
-
-Required environment variables (Vite):
-- `VITE_ROBOFLOW_PUBLISHABLE_KEY`
-- `VITE_ROBOFLOW_MODEL_NAME`
-- `VITE_DETECTION_CLASSES` (default: `cup,glass,bottle`)
-
-**Note**: Model version is selected in the Settings modal and will persist across sessions.
-
-## Configuration
-- **Hydration Interval**: Set how often to be reminded (range 1–60 minutes; default 3 minutes in this demo)
-- **Detection Model**: Choose between:
-  - **YOLO v8** (version 10): Fast and accurate general-purpose detection
-  - **RF-DETR Small** (version 8): Balanced transformer-based detection
-  - **RF-DETR Nano** (version 9): Lightweight transformer for lower-end devices
-- **Sound Notifications**: Toggle notification sounds on/off
-- **Detection Classes**: Configure via `VITE_DETECTION_CLASSES`
-- **Roboflow Model**: Provide key and model name via env vars
-
-## Tech Stack
-- **Frontend**: React 18 + TypeScript (Vite)
-- **Styling**: TailwindCSS
-- **State**: Zustand
-- **CV**: TensorFlow.js, MediaPipe FaceMesh
-- **Object Detection**: Roboflow InferenceJS
-
-## Project Structure
-```
-src/
-  components/
-    WebcamFeed.tsx        # Camera feed + overlay
-    HydrationStats.tsx    # Stats and progress
-    SettingsModal.tsx     # Configuration & controls
-    ui/                   # UI primitives (button, card, dialog, etc.)
-  hooks/
-    useFaceDetection.ts
-    useObjectDetection.ts
-    useDrinkingDetection.ts
-    useHydrationReminder.ts
-    useCanvasRenderer.ts
-  store/
-    hydrationStore.ts      # Zustand store and selectors
-  utils/
-    notifications.ts
-    overlapDetection.ts
-  constants.ts
 ```
 
-## Privacy
-- Processing happens locally in your browser
-- No raw video is stored; object detections use Roboflow's API
-- Hydration events and settings are stored locally and can be reset from the UI
-- Model selection persists locally across sessions
+Open http://localhost:5173 and grant camera permission.
 
-## Contributing
-We welcome contributions! Please follow these guidelines to keep things smooth.
+## ⚙️ Configuration
 
-### Pull Request Guidelines
-- Keep PRs focused and small; separate unrelated changes
-- Include a clear title and description with context and screenshots/GIFs when UI changes are involved
-- Adhere to our code style:
-  - TypeScript: explicit types, prefer interfaces, avoid `any`
-  - React: functional components, hooks, `React.FC` typing
-  - State: Zustand slices and selectors; avoid unnecessary re-renders
-  - Styling: TailwindCSS utility classes only (no inline styles)
-- Ensure detection logic remains performant (rAF loops, throttling, cleanup in effects)
-- Update tests if you change logic; add tests for new utilities
-- Accessibility: keyboard support, ARIA where appropriate
+### Environment Variables
+```env
+VITE_ROBOFLOW_PUBLISHABLE_KEY=your_key
+VITE_ROBOFLOW_MODEL_NAME=your_model
+VITE_DETECTION_CLASSES=cup,glass,bottle
+```
 
-### PR Checklist
-- [ ] Lint passes: `npm run lint`
-- [ ] Builds locally: `npm run build`
-- [ ] Types OK: no `any` or unsafe casts
-- [ ] Tests updated/added where relevant
-- [ ] Screenshots/GIFs for UI changes
-- [ ] Docs updated (README or `docs/*`)
+### In-App Settings
+- **Hydration Interval**: 1-60 minutes
+- **Detection Model**: Choose between YOLO v8, RF-DETR Small, or RF-DETR Nano
+- **Sound Notifications**: Toggle on/off
 
-### Branching & Commits
-- Branch names: `feat/…`, `fix/…`, `chore/…`, `docs/…`
-- Commit messages: short imperative subject + optional body (e.g., "feat: add drinking debounce to 500ms")
+## 🛠️ Tech Stack
 
-## Documentation
-- Architecture details live in `docs/architecture.md`.
+- **React 18** + **TypeScript** + **Vite**
+- **TensorFlow.js** & **MediaPipe** for face detection
+- **Roboflow InferenceJS** for object detection
+- **Zustand** for state management
+- **TailwindCSS** for styling
 
-## Support & Links
-- Roboflow: `https://roboflow.com`
-- Docs: `https://docs.roboflow.com`
-- Community: `https://discuss.roboflow.com`
-- Issues: `https://github.com/roboflow/hydrovisor/issues`
+## 🔒 Privacy
 
-## License
-MIT
+- All processing happens locally in your browser
+- No video is stored or transmitted
+- Settings persist locally via localStorage
+
+## 📝 License
+
+MIT © [Roboflow](https://roboflow.com)
