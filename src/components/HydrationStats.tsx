@@ -98,18 +98,18 @@ export const HydrationStats: React.FC = () => {
           {/* Drink Times */}
           {hydrationEvents.length > 0 ? (
             <div className="space-y-3">
-              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
+              <div className="flex flex-wrap gap-2">
                 {hydrationEvents.map((event, index) => (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: index * 0.02 }}
-                    className="flex-shrink-0"
+                    className=""
                   >
                     <Badge 
                       variant="secondary" 
-                      className="px-3 py-1.5"
+                      className="text-xs font-light px-3 py-1.5 bg-opacity-50 border border-gray-200"
                     >
                       {new Date(event.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </Badge>
