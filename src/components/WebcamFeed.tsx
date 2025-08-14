@@ -60,6 +60,8 @@ export const WebcamFeed: React.FC<WebcamFeedProps> = ({ onVideoRef, canvasRef })
   useEffect(() => {
     // Prevent multiple webcam setups
     let isMounted = true;
+    // Capture ref value at effect creation time for cleanup
+    const videoElement = videoRef.current;
     
     const initWebcam = async () => {
       if (isMounted) {
@@ -71,7 +73,7 @@ export const WebcamFeed: React.FC<WebcamFeedProps> = ({ onVideoRef, canvasRef })
 
     return () => {
       isMounted = false;
-      const videoElement = videoRef.current;
+      // Use captured videoElement from effect scope
       if (videoElement && videoElement.srcObject) {
         const stream = videoElement.srcObject as MediaStream;
         stream.getTracks().forEach(track => track.stop());

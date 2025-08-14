@@ -55,18 +55,15 @@ const isToday = (date: Date | string | null): boolean => {
   );
 };
 
-// Helper to reset data if from previous day
-const resetIfNewDay = (state: any) => {
-  if (state.trackingStartTime && !isToday(state.trackingStartTime)) {
-    console.log('New day detected, resetting hydration data');
-    return {
-      ...state,
-      hydrationEvents: [],
-      trackingStartTime: new Date(),
-      lastHydrationTime: null,
-    };
-  }
-  return state;
+// Helper to filter out events from previous days
+const filterTodayEvents = (events: HydrationEvent[]): HydrationEvent[] => {
+  if (!events) return [];
+  return events.filter(event => {
+    const eventDate = typeof event.timestamp === 'string' 
+      ? new Date(event.timestamp)
+      : event.timestamp;
+    return isToday(eventDate);
+  });
 };
 
 export const useHydrationStore = create<HydrationStore>()(
@@ -149,11 +146,17 @@ export const useHydrationStore = create<HydrationStore>()(
     const state = get();
     // If we have a last hydration time, use that
     if (state.lastHydrationTime) {
-      return Math.floor((Date.now() - state.lastHydrationTime.getTime()) / 1000);
+      const lastTime = typeof state.lastHydrationTime === 'string' 
+        ? new Date(state.lastHydrationTime) 
+        : state.lastHydrationTime;
+      return Math.floor((Date.now() - lastTime.getTime()) / 1000);
     }
     // If tracking started but no drinks yet, count from tracking start time
     if (state.trackingStartTime) {
-      return Math.floor((Date.now() - state.trackingStartTime.getTime()) / 1000);
+      const startTime = typeof state.trackingStartTime === 'string'
+        ? new Date(state.trackingStartTime)
+        : state.trackingStartTime;
+      return Math.floor((Date.now() - startTime.getTime()) / 1000);
     }
     // No tracking started yet
     return null;
@@ -171,7 +174,12 @@ export const useHydrationStore = create<HydrationStore>()(
     const state = get();
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    return state.hydrationEvents.filter(event => event.timestamp >= today).length;
+    return state.hydrationEvents.filter(event => {
+      const eventTime = typeof event.timestamp === 'string'
+        ? new Date(event.timestamp)
+        : event.timestamp;
+      return eventTime >= today;
+    }).length;
   },
   
   isFullyInitialized: () => {
@@ -179,7 +187,8 @@ export const useHydrationStore = create<HydrationStore>()(
     return state.webcamReady && state.faceDetectorReady && state.objectDetectorReady && state.notificationPermission !== null;
   },
   
-  reset: () => set(() => ({
+  reset: () => set((state) => ({
+    ...state,
     hydrationEvents: [],
     lastHydrationTime: null,
     faceDetected: false,
@@ -190,8 +199,7 @@ export const useHydrationStore = create<HydrationStore>()(
     currentObject: null,
     isDrinking: false,
     drinkingStartTime: null,
-    // Reset tracking start time to now
-    trackingStartTime: new Date(),
+    // Keep trackingStartTime as is (it's always the current session start)
   })),
     }),
     {
@@ -199,17 +207,34 @@ export const useHydrationStore = create<HydrationStore>()(
       partialize: (state) => ({ 
         hydrationIntervalMinutes: state.hydrationIntervalMinutes,
         hydrationEvents: state.hydrationEvents,
-        trackingStartTime: state.trackingStartTime,
         lastHydrationTime: state.lastHydrationTime,
       }),
       onRehydrateStorage: () => (state) => {
         if (state) {
-          // Reset data if it's from a previous day
-          const updatedState = resetIfNewDay(state);
-          if (updatedState !== state) {
-            // Apply the reset
-            Object.assign(state, updatedState);
+          // Convert string dates back to Date objects
+          if (state.lastHydrationTime && typeof state.lastHydrationTime === 'string') {
+            state.lastHydrationTime = new Date(state.lastHydrationTime);
           }
+          if (state.hydrationEvents) {
+            state.hydrationEvents = state.hydrationEvents.map((event: HydrationEvent) => ({
+              ...event,
+              timestamp: typeof event.timestamp === 'string' ? new Date(event.timestamp) : event.timestamp
+            }));
+            
+            // Filter to only keep today's events
+            state.hydrationEvents = filterTodayEvents(state.hydrationEvents);
+            
+            // Update lastHydrationTime based on filtered events
+            if (state.hydrationEvents.length > 0) {
+              const lastEvent = state.hydrationEvents[state.hydrationEvents.length - 1];
+              state.lastHydrationTime = lastEvent.timestamp;
+            } else {
+              state.lastHydrationTime = null;
+            }
+          }
+          
+          // Always set tracking start time to now (not persisted)
+          state.trackingStartTime = new Date();
         }
       },
     }

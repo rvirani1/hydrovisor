@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { WebcamFeed } from '@/components/WebcamFeed';
 import { HydrationStats } from '@/components/HydrationStats';
-import { TimeSinceLastDrink } from '@/components/TimeSinceLastDrink';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { SettingsModal } from '@/components/SettingsModal';
 import { useFaceDetection } from '@/hooks/useFaceDetection';
@@ -145,10 +144,6 @@ function App() {
           </div>
         </main>
 
-        {/* Time Since Last Drink Overlay */}
-        <AnimatePresence>
-          <TimeSinceLastDrink />
-        </AnimatePresence>
       </motion.div>
     </div>
     
