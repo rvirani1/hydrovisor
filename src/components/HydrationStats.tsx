@@ -1,10 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useHydrationStore } from '@/store/hydrationStore';
-import { Droplets, CheckCircle2, Coffee } from 'lucide-react';
+import { Droplets, Coffee } from 'lucide-react';
 
 export const HydrationStats: React.FC = () => {
   const {
@@ -91,36 +91,27 @@ export const HydrationStats: React.FC = () => {
               {todayCount}
             </div>
           </div>
-          <CardDescription>
-            {todayCount === 0 
-              ? "No drinks recorded yet today" 
-              : `${todayCount} ${todayCount === 1 ? 'drink' : 'drinks'} today`}
-          </CardDescription>
         </CardHeader>
         
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-2">
 
           {/* Drink Times */}
           {hydrationEvents.length > 0 ? (
-            <div className="space-y-2">
-              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
-                Drink Times
-              </h3>
-              <div className="space-y-1.5">
-                {hydrationEvents.slice(-5).reverse().map((event, index) => (
+            <div className="space-y-3">
+              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
+                {hydrationEvents.map((event, index) => (
                   <motion.div
                     key={index}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    className="flex items-center justify-between p-2.5 rounded-lg bg-gray-50 dark:bg-gray-800/50"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: index * 0.02 }}
+                    className="flex-shrink-0"
                   >
-                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                    <Badge 
+                      variant="secondary" 
+                      className="px-3 py-1.5"
+                    >
                       {new Date(event.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </span>
-                    <Badge variant="outline" className="text-xs">
-                      {event.detectedObject}
                     </Badge>
                   </motion.div>
                 ))}

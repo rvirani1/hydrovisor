@@ -46,6 +46,7 @@ function App() {
   const faceDetectorReady = useHydrationStore((state) => state.faceDetectorReady);
   const objectDetectorReady = useHydrationStore((state) => state.objectDetectorReady);
   const hydrationIntervalMinutes = useHydrationStore((state) => state.hydrationIntervalMinutes);
+  const isOverdue = useHydrationStore((state) => state.isOverdue());
 
   // Debug logging
   useEffect(() => {
@@ -69,7 +70,23 @@ function App() {
       {!isFullyInitialized && <LoadingScreen />}
 
       {/* Main UI - render but hide during initialization */}
-      <div className={`min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 dark:from-gray-950 dark:via-gray-900 dark:to-blue-950 ${!isFullyInitialized ? 'opacity-0 pointer-events-none' : ''}`}>
+      <motion.div 
+        className={`min-h-screen ${!isFullyInitialized ? 'opacity-0 pointer-events-none' : ''}`}
+        animate={isOverdue ? {
+          background: [
+            'linear-gradient(to bottom right, rgb(254 226 226), rgb(255 240 240), rgb(254 202 202))',
+            'linear-gradient(to bottom right, rgb(252 165 165), rgb(254 202 202), rgb(248 113 113))',
+            'linear-gradient(to bottom right, rgb(254 226 226), rgb(255 240 240), rgb(254 202 202))'
+          ]
+        } : {
+          background: 'linear-gradient(to bottom right, rgb(239 246 255), rgb(255 255 255), rgb(236 254 255))'
+        }}
+        transition={isOverdue ? {
+          duration: 3,
+          repeat: Infinity,
+          ease: "easeInOut"
+        } : {}}
+      >
       {/* Animated Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
@@ -155,7 +172,7 @@ function App() {
         </main>
 
       </motion.div>
-    </div>
+    </motion.div>
     
     {/* Settings Modal */}
     <SettingsModal open={settingsOpen} onOpenChange={setSettingsOpen} />
