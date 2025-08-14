@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { AVAILABLE_MODELS, ROBOFLOW_CONFIG, type DetectedObject } from '../constants';
+import { AVAILABLE_MODELS, type DetectedObject } from '../constants';
 
 interface HydrationEvent {
   timestamp: Date;
