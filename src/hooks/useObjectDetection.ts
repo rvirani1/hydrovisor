@@ -26,6 +26,7 @@ export const useObjectDetection = (
   const lastFrameTimeRef = useRef<number>(0);
   const setObjectDetected = useHydrationStore((state) => state.setObjectDetected);
   const setObjectDetectorReady = useHydrationStore((state) => state.setObjectDetectorReady);
+  const modelVersion = useHydrationStore((state) => state.modelVersion);
 
   useEffect(() => {
     if (!videoElement) return;
@@ -37,7 +38,7 @@ export const useObjectDetection = (
         
         const workerId = await inferenceRef.current.startWorker(
           ROBOFLOW_CONFIG.modelName,
-          ROBOFLOW_CONFIG.modelVersion,
+          modelVersion,
           ROBOFLOW_CONFIG.publishableKey
         );
         
@@ -70,7 +71,6 @@ export const useObjectDetection = (
       try {
         const image = new CVImage(videoElement);
         const detections = await inferenceRef.current.infer(workerId, image);
-        console.log('detections', detections);
         
         const drinkingObjects = detections.filter((d: Detection) => 
           DETECTION_CLASSES.includes(d.class.toLowerCase())
@@ -123,7 +123,7 @@ export const useObjectDetection = (
         setObjectDetectorReady(false);
       }
     };
-  }, [videoElement, setObjectDetected, setObjectDetectorReady]);
+  }, [videoElement, setObjectDetected, setObjectDetectorReady, modelVersion]);
 
   return null;
 };

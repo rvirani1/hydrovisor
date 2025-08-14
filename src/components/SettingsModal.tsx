@@ -9,10 +9,10 @@ import {
 } from '@/components/ui/dialog';
 import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { useHydrationStore } from '@/store/hydrationStore';
-import { Settings, RotateCcw, Timer, Volume2 } from 'lucide-react';
+import { Settings, RotateCcw, Timer, Volume2, Camera } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
+import { AVAILABLE_MODELS } from '@/constants';
 
 interface SettingsModalProps {
   open: boolean;
@@ -25,6 +25,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ open, onOpenChange
     setHydrationInterval,
     soundEnabled,
     setSoundEnabled,
+    modelVersion,
+    setModelVersion,
     reset,
   } = useHydrationStore();
 
@@ -46,13 +48,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ open, onOpenChange
         </DialogHeader>
         
         <div className="space-y-6 py-4">
-          {/* Status Badge */}
-          <div className="flex justify-center">
-            <Badge variant="default" className="px-4 py-1">
-              Tracking Active
-            </Badge>
-          </div>
-
           {/* Interval Slider */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -60,7 +55,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ open, onOpenChange
                 <Timer className="h-4 w-4" />
                 Reminder Interval
               </label>
-              <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
+              <span className="text-sm font-bold text-gray-700 dark:text-blue-400">
                 {hydrationIntervalMinutes} min
               </span>
             </div>
@@ -118,6 +113,38 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ open, onOpenChange
             </div>
             <p className="text-xs text-gray-500 dark:text-gray-400">
               Play a sound when it's time to hydrate
+            </p>
+          </div>
+
+          {/* Model Selection */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 mb-2">
+              <Camera className="h-4 w-4 text-gray-700 dark:text-gray-300" />
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Detection Model
+              </label>
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              {AVAILABLE_MODELS.map((model) => (
+                <motion.div 
+                  key={model.versionNumber} 
+                  whileHover={{ scale: 1.05 }} 
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Button
+                    variant={modelVersion === model.versionNumber ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setModelVersion(model.versionNumber)}
+                    className="w-full text-xs cursor-pointer"
+                    title={model.description}
+                  >
+                    {model.name}
+                  </Button>
+                </motion.div>
+              ))}
+            </div>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Changes require page reload
             </p>
           </div>
 

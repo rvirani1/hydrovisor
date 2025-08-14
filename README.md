@@ -2,8 +2,8 @@
 
 Your AI-powered hydration companion that uses your webcam to detect real drinking moments — no manual logging required.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Froboflow%2Fhydrovisor&project-name=hydrovisor&repository-name=hydrovisor&env=VITE_ROBOFLOW_PUBLISHABLE_KEY,VITE_ROBOFLOW_MODEL_NAME,VITE_ROBOFLOW_MODEL_VERSION,VITE_DETECTION_CLASSES)
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Froboflow%2Fhydrovisor&env=VITE_ROBOFLOW_PUBLISHABLE_KEY,VITE_ROBOFLOW_MODEL_NAME,VITE_ROBOFLOW_MODEL_VERSION,VITE_DETECTION_CLASSES)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Froboflow%2Fhydrovisor&project-name=hydrovisor&repository-name=hydrovisor&env=VITE_ROBOFLOW_PUBLISHABLE_KEY,VITE_ROBOFLOW_MODEL_NAME,VITE_DETECTION_CLASSES)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Froboflow%2Fhydrovisor&env=VITE_ROBOFLOW_PUBLISHABLE_KEY,VITE_ROBOFLOW_MODEL_NAME,VITE_DETECTION_CLASSES)
 
 ---
 
@@ -19,7 +19,8 @@ Your AI-powered hydration companion that uses your webcam to detect real drinkin
 ## How It Works
 1. **Face Detection**: TensorFlow.js + MediaPipe FaceMesh to detect your primary face and keypoints
 2. **Object Detection**: Roboflow InferenceJS to detect drink containers (`cup`, `glass`, `bottle` by default)
-3. **Drinking Detection**: Combines both signals; logs an event only if drinking is sustained for ≥ 2 seconds (with 500ms stop debounce)
+   - Choose from three detection models: YOLO v8, RF-DETR Small, or RF-DETR Nano
+3. **Drinking Detection**: Combines both signals; logs an event only if drinking is sustained for ≥ 2 frames (with 200ms stop debounce)
 4. **Local Logging**: Events are stored locally in the browser using Zustand + persist
 
 ## Demo (Local)
@@ -37,13 +38,19 @@ Grant camera permission and start tracking from the UI.
 Required environment variables (Vite):
 - `VITE_ROBOFLOW_PUBLISHABLE_KEY`
 - `VITE_ROBOFLOW_MODEL_NAME`
-- `VITE_ROBOFLOW_MODEL_VERSION`
 - `VITE_DETECTION_CLASSES` (default: `cup,glass,bottle`)
 
+**Note**: Model version is selected in the Settings modal and will persist across sessions.
+
 ## Configuration
-- **Hydration Interval**: Set how often to be reminded (range 1–120 minutes; default 3 minutes in this demo)
+- **Hydration Interval**: Set how often to be reminded (range 1–60 minutes; default 3 minutes in this demo)
+- **Detection Model**: Choose between:
+  - **YOLO v8** (version 10): Fast and accurate general-purpose detection
+  - **RF-DETR Small** (version 8): Balanced transformer-based detection
+  - **RF-DETR Nano** (version 9): Lightweight transformer for lower-end devices
+- **Sound Notifications**: Toggle notification sounds on/off
 - **Detection Classes**: Configure via `VITE_DETECTION_CLASSES`
-- **Roboflow Model**: Provide key, model name, and version in the UI or via env vars
+- **Roboflow Model**: Provide key and model name via env vars
 
 ## Tech Stack
 - **Frontend**: React 18 + TypeScript (Vite)
@@ -76,8 +83,9 @@ src/
 
 ## Privacy
 - Processing happens locally in your browser
-- No raw video is stored; object detections use Roboflow’s API
-- Hydration events are stored locally and can be reset from the UI
+- No raw video is stored; object detections use Roboflow's API
+- Hydration events and settings are stored locally and can be reset from the UI
+- Model selection persists locally across sessions
 
 ## Contributing
 We welcome contributions! Please follow these guidelines to keep things smooth.

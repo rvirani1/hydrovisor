@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { type DetectedObject } from '../constants';
+import { AVAILABLE_MODELS, ROBOFLOW_CONFIG, type DetectedObject } from '../constants';
 
 interface HydrationEvent {
   timestamp: Date;
@@ -14,6 +14,7 @@ interface HydrationStore {
   firstHydrationTime: Date | null;  // First drink of the day (persisted)
   lastHydrationTime: Date | null;    // Last drink in current session (not persisted)
   soundEnabled: boolean;              // Whether to play sound with notifications (persisted)
+  modelVersion: number;               // Object detection model version (persisted)
   webcamReady: boolean;
   faceDetectorReady: boolean;
   objectDetectorReady: boolean;
@@ -30,6 +31,7 @@ interface HydrationStore {
   addHydrationEvent: (object: DetectedObject) => void;
   setHydrationInterval: (minutes: number) => void;
   setSoundEnabled: (enabled: boolean) => void;
+  setModelVersion: (version: number) => void;
   setWebcamReady: (ready: boolean) => void;
   setFaceDetectorReady: (ready: boolean) => void;
   setObjectDetectorReady: (ready: boolean) => void;
@@ -44,6 +46,7 @@ interface HydrationStore {
   getTodayHydrationCount: () => number;
   isFullyInitialized: () => boolean;
   reset: () => void;
+  setTrackingStartTime: () => void;
 }
 
 // Helper function to check if a date is today
@@ -63,11 +66,12 @@ export const useHydrationStore = create<HydrationStore>()(
   persist(
     (set, get) => ({
   hydrationEvents: [],
-  trackingStartTime: new Date(),
+  trackingStartTime: null,
   hydrationIntervalMinutes: 3,
   firstHydrationTime: null,
   lastHydrationTime: null,
   soundEnabled: true,  // Default to true
+  modelVersion: AVAILABLE_MODELS[0].versionNumber,
   webcamReady: false,
   faceDetectorReady: false,
   objectDetectorReady: false,
@@ -96,10 +100,13 @@ export const useHydrationStore = create<HydrationStore>()(
   
   setSoundEnabled: (enabled) => set({ soundEnabled: enabled }),
   
-  setWebcamReady: (ready) => set((state) => ({ 
-    webcamReady: ready,
-    trackingStartTime: ready && !state.trackingStartTime ? new Date() : state.trackingStartTime
-  })),
+  setModelVersion: (version) => {
+    set({ modelVersion: version });
+    // Force page reload to reinitialize with new model
+    window.location.reload();
+  },
+  
+  setWebcamReady: (ready) => set({ webcamReady: ready }),
   
   setFaceDetectorReady: (ready) => set({ faceDetectorReady: ready }),
   
@@ -182,6 +189,14 @@ export const useHydrationStore = create<HydrationStore>()(
     return state.webcamReady && state.faceDetectorReady && state.objectDetectorReady && state.notificationPermission !== null;
   },
   
+  setTrackingStartTime: () => set((state) => {
+    if (!state.trackingStartTime) {
+      console.log('Setting tracking start time:', new Date());
+      return { trackingStartTime: new Date() };
+    }
+    return {};
+  }),
+  
   reset: () => set((state) => ({
     ...state,
     hydrationEvents: [],
@@ -203,6 +218,7 @@ export const useHydrationStore = create<HydrationStore>()(
       partialize: (state) => ({ 
         hydrationIntervalMinutes: state.hydrationIntervalMinutes,
         soundEnabled: state.soundEnabled,
+        modelVersion: state.modelVersion,
         hydrationEvents: state.hydrationEvents,
         firstHydrationTime: state.firstHydrationTime,
         // Don't persist lastHydrationTime - it should reset on page load
@@ -227,8 +243,8 @@ export const useHydrationStore = create<HydrationStore>()(
             }));
           }
           
-          // Always set tracking start time to now (not persisted)
-          state.trackingStartTime = new Date();
+          // Don't set tracking start time here - wait for UI to be ready
+          state.trackingStartTime = null;
           
           // lastHydrationTime should be null on page load unless we found it from events
           if (!state.hydrationEvents || state.hydrationEvents.length === 0) {

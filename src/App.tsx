@@ -49,6 +49,35 @@ function App() {
   const hydrationIntervalMinutes = useHydrationStore((state) => state.hydrationIntervalMinutes);
   const isOverdue = useHydrationStore((state) => state.isOverdue());
   const isDrinking = useHydrationStore((state) => state.isDrinking);
+  const setTrackingStartTime = useHydrationStore((state) => state.setTrackingStartTime);
+
+  // Set tracking start time when fully initialized
+  useEffect(() => {
+    if (isFullyInitialized) {
+      setTrackingStartTime();
+    }
+  }, [isFullyInitialized, setTrackingStartTime]);
+
+  // Ensure background color is correct - fix any stuck states
+  useEffect(() => {
+    if (!isFullyInitialized) return;
+    
+    const interval = setInterval(() => {
+      // Force a re-render if the background is stuck on orange when not drinking
+      if (!isDrinking && !isOverdue) {
+        // This will trigger a re-render to ensure correct background
+        const element = document.querySelector('.min-h-screen') as HTMLElement;
+        if (element && element.style.background && element.style.background.includes('251')) {
+          console.log('Fixing stuck orange background');
+          // Force update by toggling a class
+          element.classList.add('bg-reset');
+          setTimeout(() => element.classList.remove('bg-reset'), 10);
+        }
+      }
+    }, 500); // Check every 500ms
+
+    return () => clearInterval(interval);
+  }, [isFullyInitialized, isDrinking, isOverdue]);
 
   // Debug logging
   useEffect(() => {
@@ -80,11 +109,9 @@ function App() {
         animate={isFullyInitialized ? (isDrinking ? {
           opacity: 1,
           background: [
-            'linear-gradient(to bottom right, rgb(234 88 12), rgb(249 115 22), rgb(254 215 170))',
-            'linear-gradient(to bottom right, rgb(255 237 213), rgb(254 215 170), rgb(251 146 60))',
-            'linear-gradient(to bottom right, rgb(249 115 22), rgb(234 88 12), rgb(194 65 12))',
-            'linear-gradient(to bottom right, rgb(255 237 213), rgb(254 215 170), rgb(251 146 60))',
-            'linear-gradient(to bottom right, rgb(234 88 12), rgb(249 115 22), rgb(254 215 170))'
+            'linear-gradient(to bottom right, rgb(30 41 59), rgb(51 65 85), rgb(251 146 60))',
+            'linear-gradient(to bottom right, rgb(30 41 59), rgb(71 85 105), rgb(249 115 22))',
+            'linear-gradient(to bottom right, rgb(30 41 59), rgb(51 65 85), rgb(251 146 60))'
           ]
         } : isOverdue ? {
           opacity: 1,
@@ -99,12 +126,13 @@ function App() {
         }) : { opacity: 0 }}
         transition={isFullyInitialized ? (isDrinking ? {
           opacity: { duration: 0.8, delay: 0.3 },
-          background: { duration: 0.4, repeat: Infinity, ease: "easeInOut" }
+          background: { duration: 3, repeat: Infinity, ease: "easeInOut", repeatType: "reverse" }
         } : isOverdue ? {
           opacity: { duration: 0.8, delay: 0.3 },
-          background: { duration: 3, repeat: Infinity, ease: "easeInOut" }
+          background: { duration: 3, repeat: Infinity, ease: "easeInOut", repeatType: "reverse" }
         } : {
-          opacity: { duration: 0.8, delay: 0.3 }
+          opacity: { duration: 0.8, delay: 0.3 },
+          background: { duration: 0.5 }
         }) : {}}
       >
       {/* Animated Background Elements */}
