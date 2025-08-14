@@ -11,7 +11,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "test:ci": "jest --coverage --watchAll=false"
+    "test:ci": "jest --watchAll=false"
   },
   "dependencies": {
     "@mediapipe/face_mesh": "^0.4.1633559619",

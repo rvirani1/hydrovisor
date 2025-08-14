@@ -272,18 +272,13 @@ describe('myStore', () => {
 });
 ```
 
-## Coverage Requirements
+## Coverage (Optional)
 
-### Global Thresholds
-
-- **Statements**: 70%
-- **Branches**: 70%
-- **Functions**: 70%
-- **Lines**: 70%
+Coverage thresholds are not enforced in this project. Collect coverage when it provides value for a change or PR.
 
 ### Exclusions
 
-Files excluded from coverage:
+If you do collect coverage, you may exclude files like:
 - Type definitions (`*.d.ts`)
 - Entry point (`main.tsx`)
 - Vite environment (`vite-env.d.ts`)
@@ -291,7 +286,7 @@ Files excluded from coverage:
 ### Coverage Reports
 
 ```bash
-# Generate coverage report
+# Generate coverage report if desired
 npm run test:coverage
 
 # View coverage in browser

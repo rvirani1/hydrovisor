@@ -69,7 +69,9 @@ npm run test:coverage
 npm run test:ci
 ```
 
-### Test Coverage
+### Notes
+
+- Coverage collection is optional in this project. Use `npm run test:coverage` only when you need a report.
 
 The test suite includes:
 
@@ -78,12 +80,6 @@ The test suite includes:
 - **React Components**: UI components with proper mocking
 - **Custom Hooks**: Detection logic, timing functions
 - **Integration**: End-to-end workflows
-
-Current coverage targets:
-- **Statements**: 70%
-- **Branches**: 70% 
-- **Functions**: 70%
-- **Lines**: 70%
 
 ### Test Structure
 
