@@ -138,14 +138,19 @@ function App() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setSettingsOpen(true)}
-                  className="flex items-center gap-3 px-8 py-3 rounded-lg bg-white/10 backdrop-blur-sm hover:bg-white/15 transition-all cursor-pointer border border-white/20 min-w-[160px]"
+                  className="flex items-center gap-3 px-6 py-2.5 rounded-lg bg-gradient-to-r from-slate-600/60 to-slate-700/60 backdrop-blur-sm hover:from-slate-500/60 hover:to-slate-600/60 transition-all cursor-pointer border border-slate-400/40 hover:border-slate-300/50 shadow-lg hover:shadow-xl min-w-[160px] group ring-1 ring-white/10"
                 >
-                  <Clock className="h-6 w-6 text-slate-300" />
+                  <Clock className="h-5 w-5 text-white/70 group-hover:text-white transition-colors" />
                   <div className="text-left">
-                    <div className="text-sm font-medium text-slate-400">Interval</div>
-                    <div className="text-lg font-bold text-white">
+                    <div className="text-xs font-medium text-slate-300 group-hover:text-white transition-colors">Interval</div>
+                    <div className="text-base font-bold text-white">
                       {hydrationIntervalMinutes} min
                     </div>
+                  </div>
+                  <div className="ml-auto">
+                    <svg className="w-4 h-4 text-white/50 group-hover:text-white/70 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
                   </div>
                 </motion.button>
               </div>
