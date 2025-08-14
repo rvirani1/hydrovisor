@@ -99,7 +99,7 @@ function App() {
         }) : { opacity: 0 }}
         transition={isFullyInitialized ? (isDrinking ? {
           opacity: { duration: 0.8, delay: 0.3 },
-          background: { duration: 1, repeat: Infinity, ease: "easeInOut" }
+          background: { duration: 0.4, repeat: Infinity, ease: "easeInOut" }
         } : isOverdue ? {
           opacity: { duration: 0.8, delay: 0.3 },
           background: { duration: 3, repeat: Infinity, ease: "easeInOut" }
