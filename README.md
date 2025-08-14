@@ -17,7 +17,7 @@ Smart hydration tracking using AI-powered computer vision to detect when you're 
 - **Styling**: Tailwind CSS + Framer Motion animations
 - **State Management**: Zustand with persistence
 - **AI/ML**: TensorFlow.js + MediaPipe + Roboflow
-- **Testing**: Jest + React Testing Library
+- **Testing**: Jest + React Testing Library (no coverage tooling)
 - **Build**: Vite
 - **CI/CD**: GitHub Actions
 
@@ -62,16 +62,11 @@ npm test
 # Run tests in watch mode
 npm run test:watch
 
-# Run tests with coverage report
-npm run test:coverage
-
-# Run tests for CI (no watch, with coverage)
+# Run tests for CI (no watch)
 npm run test:ci
 ```
 
-### Notes
 
-- Coverage collection is optional in this project. Use `npm run test:coverage` only when you need a report.
 
 The test suite includes:
 
@@ -142,9 +137,8 @@ src/
 
 GitHub Actions workflow automatically:
 1. **Linting**: ESLint code quality checks
-2. **Testing**: Jest test suite with coverage
+2. **Testing**: Jest test suite
 3. **Building**: Vite production build
-4. **Coverage**: Reports uploaded to Codecov
 
 ## Browser Support
 
@@ -177,7 +171,7 @@ GitHub Actions workflow automatically:
 - [ ] Tests pass: `npm test`
 - [ ] Linting passes: `npm run lint`
 - [ ] Build succeeds: `npm run build`
-- [ ] Coverage maintained: `npm run test:coverage`
+
 
 ## License
 

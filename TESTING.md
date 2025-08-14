@@ -9,7 +9,7 @@ The Hydrovisor project uses a robust testing strategy covering:
 - **Unit Tests**: Individual functions and components
 - **Integration Tests**: Component interactions and workflows
 - **Mocking**: External dependencies and browser APIs
-- **Coverage**: Code coverage reporting and thresholds
+- **Reliability**: Deterministic, fast unit and integration tests
 
 ## Test Stack
 
@@ -55,20 +55,7 @@ export default {
       },
     }],
   },
-  collectCoverageFrom: [
-    'src/**/*.{ts,tsx}',
-    '!src/**/*.d.ts',
-    '!src/main.tsx',
-    '!src/vite-env.d.ts',
-  ],
-  coverageThreshold: {
-    global: {
-      branches: 70,
-      functions: 70,
-      lines: 70,
-      statements: 70,
-    },
-  },
+  // Coverage settings removed per project preference
 };
 ```
 
@@ -81,10 +68,7 @@ npm test
 # Run tests in watch mode during development
 npm run test:watch
 
-# Run tests with coverage report
-npm run test:coverage
-
-# Run tests for CI (no watch, with coverage)
+# Run tests for CI (no watch)
 npm run test:ci
 ```
 
@@ -300,18 +284,9 @@ open coverage/lcov-report/index.html
 ```yaml
 - name: Run tests
   run: npm run test:ci
-
-- name: Upload coverage
-  uses: codecov/codecov-action@v3
-  with:
-    file: ./coverage/lcov.info
 ```
 
-### Coverage Reporting
 
-- **Local**: HTML reports in `coverage/` directory
-- **CI**: Uploaded to Codecov for tracking
-- **PR Checks**: Coverage deltas reported on pull requests
 
 ## Best Practices
 

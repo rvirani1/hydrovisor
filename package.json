@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+
     "test:ci": "jest --watchAll=false"
   },
   "dependencies": {
