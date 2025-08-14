@@ -15,6 +15,7 @@ interface HydrationStore {
   webcamReady: boolean;
   faceDetectorReady: boolean;
   objectDetectorReady: boolean;
+  notificationPermission: NotificationPermission | null;
   faceDetected: boolean;
   faceBox: { xMin: number; yMin: number; width: number; height: number } | null;
   faceKeypoints: Array<{ x: number; y: number }> | null;
@@ -29,6 +30,7 @@ interface HydrationStore {
   setWebcamReady: (ready: boolean) => void;
   setFaceDetectorReady: (ready: boolean) => void;
   setObjectDetectorReady: (ready: boolean) => void;
+  setNotificationPermission: (permission: NotificationPermission | null) => void;
   setFaceDetected: (detected: boolean, box?: { xMin: number; yMin: number; width: number; height: number } | null, keypoints?: Array<{ x: number; y: number }> | null) => void;
   setObjectDetected: (detected: boolean, object?: DetectedObject | null, detections?: Array<{ class: string; confidence: number; x: number; y: number; width: number; height: number }> | null) => void;
   setIsDrinking: (drinking: boolean) => void;
@@ -51,6 +53,7 @@ export const useHydrationStore = create<HydrationStore>()(
   webcamReady: false,
   faceDetectorReady: false,
   objectDetectorReady: false,
+  notificationPermission: null,
   faceDetected: false,
   faceBox: null,
   faceKeypoints: null,
@@ -79,6 +82,8 @@ export const useHydrationStore = create<HydrationStore>()(
   setFaceDetectorReady: (ready) => set({ faceDetectorReady: ready }),
   
   setObjectDetectorReady: (ready) => set({ objectDetectorReady: ready }),
+  
+  setNotificationPermission: (permission) => set({ notificationPermission: permission }),
   
   setFaceDetected: (detected, box = null, keypoints = null) => set({ 
     faceDetected: detected,
@@ -145,7 +150,7 @@ export const useHydrationStore = create<HydrationStore>()(
   
   isFullyInitialized: () => {
     const state = get();
-    return state.webcamReady && state.faceDetectorReady && state.objectDetectorReady;
+    return state.webcamReady && state.faceDetectorReady && state.objectDetectorReady && state.notificationPermission !== null;
   },
   
   reset: () => set(() => ({

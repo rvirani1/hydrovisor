@@ -1,15 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useHydrationStore } from '@/store/hydrationStore';
+import { requestNotificationPermission, checkNotificationSupport } from '@/utils/notifications';
 
 export const LoadingScreen: React.FC = () => {
-  const { webcamReady, faceDetectorReady, objectDetectorReady } = useHydrationStore();
+  const { webcamReady, faceDetectorReady, objectDetectorReady, notificationPermission, setNotificationPermission } = useHydrationStore();
+  const [permissionRequested, setPermissionRequested] = useState(false);
+  
+  const supportsNotifications = checkNotificationSupport();
+  const notificationReady = !supportsNotifications || notificationPermission !== null;
   
   const loadingSteps = [
     { label: 'Camera', ready: webcamReady },
     { label: 'Face Detection', ready: faceDetectorReady },
     { label: 'Object Detection', ready: objectDetectorReady },
+    ...(supportsNotifications ? [{ label: 'Notifications', ready: notificationReady }] : []),
   ];
+
+  useEffect(() => {
+    const requestPermission = async () => {
+      if (!permissionRequested && supportsNotifications) {
+        setPermissionRequested(true);
+        const permission = await requestNotificationPermission();
+        setNotificationPermission(permission);
+      }
+    };
+    
+    requestPermission();
+  }, [permissionRequested, supportsNotifications, setNotificationPermission]);
 
   return (
     <motion.div

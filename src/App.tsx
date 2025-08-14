@@ -9,6 +9,7 @@ import { useFaceDetection } from '@/hooks/useFaceDetection';
 import { useObjectDetection } from '@/hooks/useObjectDetection';
 import { useDrinkingDetection } from '@/hooks/useDrinkingDetection';
 import { useCanvasRenderer } from '@/hooks/useCanvasRenderer';
+import { useHydrationReminder } from '@/hooks/useHydrationReminder';
 import { useHydrationStore } from '@/store/hydrationStore';
 import { Settings } from 'lucide-react';
 import logo from '@/assets/logo.png';
@@ -60,6 +61,7 @@ function App() {
   useObjectDetection(videoElement);
   useDrinkingDetection();
   useCanvasRenderer(canvasRef.current);
+  useHydrationReminder();
 
   return (
     <>
