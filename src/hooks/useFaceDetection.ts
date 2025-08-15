@@ -5,6 +5,7 @@ import { useHydrationStore } from '../store/hydrationStore';
 import { FRAME_RATES } from '../constants';
 
 const FACE_FRAME_INTERVAL = 1000 / FRAME_RATES.faceDetection;
+const FACE_PERSISTENCE_TIMEOUT = 1000; // 1 second grace period for face detection
 
 export const useFaceDetection = (
   videoElement: HTMLVideoElement | null
@@ -12,6 +13,7 @@ export const useFaceDetection = (
   const detectorRef = useRef<faceLandmarksDetection.FaceLandmarksDetector | null>(null);
   const animationRef = useRef<number>(0);
   const lastFrameTimeRef = useRef<number>(0);
+  const lastFaceDetectedAtRef = useRef<number>(0);
   const setFaceDetected = useHydrationStore((state) => state.setFaceDetected);
   const setFaceDetectorReady = useHydrationStore((state) => state.setFaceDetectorReady);
 
@@ -58,8 +60,16 @@ export const useFaceDetection = (
         if (faces.length > 0) {
           const face = faces[0];
           setFaceDetected(true, face.box || null, face.keypoints || null);
+          lastFaceDetectedAtRef.current = currentTime;
         } else {
-          setFaceDetected(false, null, null);
+          // Check if we should clear the face
+          const timeSinceLastFace = currentTime - lastFaceDetectedAtRef.current;
+          
+          if (timeSinceLastFace >= FACE_PERSISTENCE_TIMEOUT) {
+            // Enough time has passed, clear the face
+            setFaceDetected(false, null, null);
+          }
+          // Otherwise, do nothing - keep the current state
         }
       } catch (error) {
         console.error('Face detection error:', error);

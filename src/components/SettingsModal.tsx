@@ -47,7 +47,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ open, onOpenChange
           </DialogDescription>
         </DialogHeader>
         
-        <div className="space-y-6 py-4">
+        <div className="space-y-8 py-4">
           {/* Interval Slider */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -73,25 +73,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ open, onOpenChange
               <span>1 min</span>
               <span>30 min</span>
               <span>60 min</span>
-            </div>
-          </div>
-
-          {/* Quick Settings */}
-          <div className="space-y-2">
-            <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">Quick Settings</p>
-            <div className="grid grid-cols-3 gap-2">
-              {[5, 15, 30].map((minutes) => (
-                <motion.div key={minutes} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button
-                    variant={hydrationIntervalMinutes === minutes ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setHydrationInterval(minutes)}
-                    className="w-full text-xs cursor-pointer"
-                  >
-                    {minutes}m
-                  </Button>
-                </motion.div>
-              ))}
             </div>
           </div>
 

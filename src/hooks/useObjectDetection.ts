@@ -17,6 +17,7 @@ interface Detection {
 }
 
 const OBJECT_FRAME_INTERVAL = 1000 / FRAME_RATES.objectDetection;
+const OBJECT_PERSISTENCE_TIMEOUT = 1000; // 1 second grace period for object detection
 
 export const useObjectDetection = (
   videoElement: HTMLVideoElement | null
@@ -24,6 +25,7 @@ export const useObjectDetection = (
   const inferenceRef = useRef<InferenceEngine | null>(null);
   const animationRef = useRef<number>(0);
   const lastFrameTimeRef = useRef<number>(0);
+  const lastObjectDetectedAtRef = useRef<number>(0);
   const setObjectDetected = useHydrationStore((state) => state.setObjectDetected);
   const setObjectDetectorReady = useHydrationStore((state) => state.setObjectDetectorReady);
   const modelVersion = useHydrationStore((state) => state.modelVersion);
@@ -94,13 +96,22 @@ export const useObjectDetection = (
             height: largestCup.bbox.height
           }];
 
+          // Update timestamp and set object detected
+          lastObjectDetectedAtRef.current = currentTime;
           setObjectDetected(
             true, 
             largestCup.class.toLowerCase() as DetectedObject,
             detectionData
           );
         } else {
-          setObjectDetected(false, null, null);
+          // Check if we should clear the object
+          const timeSinceLastObject = currentTime - lastObjectDetectedAtRef.current;
+          
+          if (timeSinceLastObject >= OBJECT_PERSISTENCE_TIMEOUT) {
+            // Enough time has passed, clear the object
+            setObjectDetected(false, null, null);
+          }
+          // Otherwise, do nothing - keep the current state
         }
       } catch (error) {
         console.error('Object detection error:', error);
