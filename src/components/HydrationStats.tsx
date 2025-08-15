@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useHydrationStore } from '@/store/hydrationStore';
-import { Droplets, Coffee } from 'lucide-react';
+import { Droplets, Coffee, Code2, Heart } from 'lucide-react';
 
 export const HydrationStats: React.FC = () => {
   const {
@@ -125,6 +125,28 @@ export const HydrationStats: React.FC = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Made with Love */}
+      <div className="flex items-center justify-center py-2">
+        <p className="text-sm text-slate-500/60 flex items-center gap-1.5">
+          Made with 
+          <Heart className="h-3.5 w-3.5 text-red-500/50 fill-red-500/40" />
+          by Riaz V
+        </p>
+      </div>
+
+      {/* GitHub Link */}
+      <motion.a
+        href="https://github.com/rvirani1/hydrovisor"
+        target="_blank"
+        rel="noopener noreferrer"
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        className="flex items-center justify-center gap-2 py-3 transition-colors text-slate-400 hover:text-white"
+      >
+        <Code2 className="h-4 w-4" />
+        <span className="text-sm font-medium">Source Code</span>
+      </motion.a>
     </motion.div>
   );
 };

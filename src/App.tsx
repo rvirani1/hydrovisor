@@ -10,7 +10,7 @@ import { useDrinkingDetection } from '@/hooks/useDrinkingDetection';
 import { useCanvasRenderer } from '@/hooks/useCanvasRenderer';
 import { useHydrationReminder } from '@/hooks/useHydrationReminder';
 import { useHydrationStore } from '@/store/hydrationStore';
-import { Clock, Heart } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import logo from '@/assets/logo.png';
 import roboflowLogo from '@/assets/roboflow.png';
 
@@ -230,22 +230,6 @@ function App() {
             </motion.div>
           </div>
         </main>
-
-        {/* Footer */}
-        <motion.footer 
-          variants={itemVariants}
-          className="mt-8 pb-6"
-        >
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-center">
-              <p className="text-sm text-slate-500/60 flex items-center gap-1.5">
-                Made with 
-                <Heart className="h-3.5 w-3.5 text-red-500/50 fill-red-500/40" />
-                by Riaz V
-              </p>
-            </div>
-          </div>
-        </motion.footer>
 
       </motion.div>
     </motion.div>
