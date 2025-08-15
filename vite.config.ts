@@ -10,4 +10,7 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    allowedHosts: ['hydrovisor.live', "544fce9baf87.ngrok-free.app"],
+  }
 })

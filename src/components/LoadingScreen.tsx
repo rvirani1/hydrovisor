@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useHydrationStore } from '@/store/hydrationStore';
 import { requestNotificationPermission, checkNotificationSupport } from '@/utils/notifications';
+import { isMobileDevice } from '@/utils/deviceDetection';
 
 export const LoadingScreen: React.FC = () => {
   const { webcamReady, faceDetectorReady, objectDetectorReady, notificationPermission, setNotificationPermission } = useHydrationStore();
   const [permissionRequested, setPermissionRequested] = useState(false);
+  const [isMobile] = useState(() => isMobileDevice());
   
   const supportsNotifications = checkNotificationSupport();
   const notificationReady = !supportsNotifications || notificationPermission !== null;
@@ -37,6 +39,36 @@ export const LoadingScreen: React.FC = () => {
       transition={{ duration: 0.6, ease: "easeInOut" }}
     >
       <div className="text-center">
+        {/* Mobile Warning Banner */}
+        {isMobile && (
+          <motion.div
+            className="absolute top-4 left-4 right-4 bg-amber-500 text-white p-4 rounded-lg shadow-lg flex items-center gap-3"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <svg
+              className="w-6 h-6 flex-shrink-0"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+            <div className="text-left">
+              <div className="font-semibold">Mobile Device Detected</div>
+              <div className="text-sm opacity-90">
+                This application is optimized for desktop use and may not work properly on mobile devices.
+              </div>
+            </div>
+          </motion.div>
+        )}
+        
         {/* Animated Water Drop Logo */}
         <motion.div
           className="mb-8 inline-block"
