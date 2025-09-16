@@ -47,7 +47,7 @@ VITE_DETECTION_CLASSES=cup,glass,bottle
 
 ## 🛠️ Tech Stack
 
-- **React 18** + **TypeScript** + **Vite**
+- **React 19** + **TypeScript** + **Vite**
 - **TensorFlow.js** & **MediaPipe** for face detection
 - **Roboflow InferenceJS** for object detection
 - **Zustand** for state management
